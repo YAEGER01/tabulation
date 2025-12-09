@@ -1,0 +1,160 @@
+{% extends 'admin/adminpage.html' %}
+{% load static %}
+{% block content %}
+<meta http-equiv="refresh" content="5">
+<link rel="stylesheet" type="text/css" href="{% static 'admin/cssdesign/design.css' %}"/>
+<style>
+.CSSTableGenerator {
+    margin: 0 auto;
+    padding: 0;
+    width: 80%;
+    box-shadow: 0 8px 32px #888888;
+    border: 2px solid #4CAF50;
+    border-radius: 10px;
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.CSSTableGenerator table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+.CSSTableGenerator tr {
+    transition: background 0.2s;
+}
+.CSSTableGenerator tr:nth-child(odd) {
+    background-color: #f6fff6;
+}
+.CSSTableGenerator tr:nth-child(even) {
+    background-color: #e9fbe9;
+}
+.CSSTableGenerator td, .CSSTableGenerator th {
+    border: 1px solid #4CAF50;
+    text-align: center;
+    padding: 12px 8px;
+    font-size: 16px;
+    font-weight: 500;
+}
+.CSSTableGenerator th {
+    background: linear-gradient(to bottom, #b2ffb2 5%, #4CAF50 100%);
+    color: #222;
+    font-size: 18px;
+    font-weight: bold;
+    border-bottom: 2px solid #388e3c;
+}
+.CSSTableGenerator tr:first-child td {
+    background: linear-gradient(to bottom, #b2ffb2 5%, #4CAF50 100%);
+    color: #222;
+    font-size: 18px;
+    font-weight: bold;
+    border-bottom: 2px solid #388e3c;
+}
+.CSSTableGenerator tr.blinkwin {
+    animation: blinkwin 1s infinite;
+}
+@keyframes blinkwin {
+    from { background-color: #ffb3b3; }
+    to { background-color: inherit; }
+}
+.CSSButton {
+    border: 1.5px solid #4CAF50;
+    background: linear-gradient(to bottom, #f5f5f5 0%, #e0e0e0 100%);
+    box-shadow: 0 2px 4px #eee;
+    border-radius: 8px;
+    text-shadow: 0px 1px 1px #fff;
+    font-weight: normal;
+    margin: 1px 5px;
+    padding: 8px 0px;
+    color: #222;
+    letter-spacing: 1px;
+    font-size: 14px;
+    width: 120px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    display: inline-block;
+    transition: background 0.2s;
+}
+.CSSButton:hover {
+    background: linear-gradient(to bottom, #D1D1D1 3%, #FFFFFF 90%);
+    background-color: #D1D1D1;
+}
+.CSSButton:active {
+    position: relative;
+    top: 1px;
+    left: 0px;
+}
+a {
+    text-decoration: none;
+    font-weight: bold;
+    color: #222;
+}
+a:active {
+    text-decoration: underline;
+}
+</style>
+<script>
+function judgepagerec(judid) {
+    window.open("judgepage.php?myjid=" + judid, null, "dialogwidth: 800; dialogheight: 700; resizable: yes;center : yes;");
+}
+function requestapproved() {
+    var vevid = '{{ getevid }}';
+    var vnores = '{{ nores }}';
+    fetch("{% url 'requestapproved' %}?myevid=" + vevid + "&mynores=" + vnores)
+        .then(response => response.json())
+        .then(data => alert(data.message));
+}
+function cancelapproved() {
+    if (confirm('Are you sure you want to delete!')) {
+        var vevid = '{{ getevid }}';
+        fetch("{% url 'cancelapproved' %}?myevid=" + vevid)
+            .then(response => response.json())
+            .then(data => alert(data.message));
+    }
+}
+</script>
+<body style="background-color:#FFFFff;">
+<center>
+    <p style="font-family: serif,arial; font-size:x-large; font-weight: bold; color: red;" align="center">
+        <a href="#" onclick="window.open('resultcontest.php?myevid={{ getevid }}&mynores={{ nores }}',null,'dialogwidth: 800; dialogheight: 700; resizable: yes;center : yes;');">{{ rowevdes }}</a>
+    </p>
+    <table class="CSSTableGenerator">
+        <tr>
+            {% for judge in judges %}
+                <td><a href="#" onclick="judgepagerec('{{ judge.id }}');">Judge<br/>{{ forloop.counter }}</a></td>
+            {% endfor %}
+            <td><a href="#" onclick="window.open('resultdetails.php?myevid={{ getevid }}&mynores={{ nores }}',null,'dialogwidth: 800; dialogheight: 700; resizable: yes;center : yes;');">Total</a></td>
+        </tr>
+        {% for row in candidate_rows %}
+        <tr class="{% if row.is_winner %}blinkwin{% endif %}">
+            {% for score in row.scores %}
+                <td>{{ score.rank }}</td>
+            {% endfor %}
+            <td>{{ row.restotscore }}</td>
+        </tr>
+        {% endfor %}
+        {% if cntapp > 0 %}
+        <tr>
+            {% for app in approval_status %}
+                <td>{{ app.status }}{% if app.is_waiting %}<img src="{% static 'admin/icon/ajax-loader.gif' %}" alt="" style="visibility:visible; width: 10px; height: 10px; margin: -25px 0 0 -25px;"/>{% endif %}</td>
+            {% endfor %}
+        </tr>
+        {% endif %}
+    </table>
+    <br/>
+    <table>
+        <tr>
+            <td>
+                {% if cntapp > 0 %}
+                <span class="CSSButton" onclick="cancelapproved();">Cancel Request</span>
+                {% else %}
+                <span class="CSSButton" onclick="requestapproved();">Send Request Approved</span>
+                {% endif %}
+            </td>
+            <td></td>
+        </tr>
+    </table>
+</center>
+</body>
+{% endblock %}

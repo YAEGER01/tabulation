@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'admin/cssdesign/design.css' %}"/>
+{% if success %}
+<div id="perfogen">
+    <h3>Congratulations, password was successfully changed!</h3>
+</div>
+{% else %}
+<form method="post">
+    {% csrf_token %}
+    <fieldset style="width: 400px;"><legend><b>Change Password Form:</b></legend>
+    <table width="633">
+    <tr>
+    <td width="218">Current password:</td>
+    <td><input type="password" name="password" size="20" maxlength="20" /></td>
+    <td><div style="color:red; font-size: small">{{ msgoldpass }}</div></td>
+    </tr>
+    </table>
+    <table width="633">
+    <tr>
+    <td width="218">New password:</td>
+    <td><input type="password" name="password1" size="20" maxlength="20" /></td>
+    <td><div style="color:red; font-size: small">{{ msgnewpass }}</div></td>
+    </tr>
+    </table>
+    <table width="633">
+    <tr>
+    <td width="218">Confirm New password:</td>
+    <td><input type="password" name="password2" size="20" maxlength="20" /></td>
+    <td><div style="color:red; font-size: small">{{ msgconpass }}</div></td>
+    </tr>
+    </table>
+    <div align="right"><input type="submit" name="submit" value="Save Changed" /></div>
+    <div style="color:red; font-size: small">{{ message }}</div>
+    </fieldset>
+</form>
+{% endif %}
+{% endblock %}

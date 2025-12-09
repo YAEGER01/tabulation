@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'admin/cssdesign/design.css' %}"/>
+<center>
+<label style="font-size:24px; font-family: arial; font-weight: bolder;">Top Rank</label>
+<form id="resultin-form" method="get">
+    <select class="optsel" id="optno" name="optno">
+        {% for idx in candidate_range %}
+            <option value="{{ idx }}">{{ idx }}</option>
+        {% endfor %}
+    </select>
+    <br/><br/>
+    <button type="button" class="CSSButton" onclick="viewtop('{{ getevid }}')">View</button>
+    <button type="button" class="CSSButton" onclick="viewtopsum('{{ getevid }}')">Summary</button>
+</form>
+</center>
+<script type="text/javascript">
+function viewtop(vevid){
+    var getnores = document.getElementById('optno').value;
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if(xhr.readyState == 4) {
+            window.open("/admin/result/?myevid=" + vevid, null, "dialogwidth: 800; dialogheight: 700; resizable: yes;center : yes;");
+        }
+    }
+    xhr.open("GET", "/admin/saverecord/?mycontrol=noshowres&mycrid=" + getnores, true);
+    xhr.send(null);
+}
+function viewtopsum(vevid){
+    var getnores = document.getElementById('optno').value;
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if(xhr.readyState == 4) {
+            window.open("/admin/resultsum/?myevid=" + vevid, null, "dialogwidth: 800; dialogheight: 700; resizable: yes;center : yes;scroll:yes;");
+        }
+    }
+    xhr.open("GET", "/admin/saverecord/?mycontrol=noshowres&mycrid=" + getnores, true);
+    xhr.send(null);
+}
+</script>
+{% endblock %}

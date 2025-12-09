@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'admin/cssdesign/design.css' %}"/>
+<link rel="icon" type="jpeg/png" href="{% static 'admin/images/logo.png' %}"/>
+<title>ISU STATS</title>
+<style type="text/css">
+    a:link    { text-decoration: none; font-weight: normal; background-color: none; color: blue; }
+    a:visited { text-decoration: none; font-weight: normal; background-color: none; color: #000000; }
+    a:hover   { text-decoration: none; font-weight: normal; background-color: none; color: #000000; }
+    a:active  { text-decoration: underline; font-weight: normal; background-color: none; color: #000000; }
+</style>
+<div id="headerboxmenu">
+<center>
+<table width="70%">
+<tr><td></td></tr>
+<tr><td></td></tr>
+<tr>
+   <!-- <td style="border-right: 1px solid gray; border-left: 1px solid gray; width: 20px; text-align: center;"><a href="{% url 'admin_reports' %}" target="mydis">Reports</a></td>-->
+<td style="border-right: 1px solid gray; border-left: 1px solid gray; width: 20px; text-align: center;"><a href="{% url 'eventlst' %}" target="mydis">Events</a></td>
+<td style="border-right: 1px solid gray; width: 20px; text-align: center;"><a href="{% url 'crilst' %}" target="mydis">Criteria</a></td>
+<td style="border-right: 1px solid gray; width: 20px; text-align: center;"><a href="{% url 'judgelist' %}" target="mydis">Judges</a></td>
+<td style="border-right: 1px solid gray; width: 20px; text-align: center;"><a href="{% url 'canlst' %}" target="mydis">Aspirant</a></td>
+<td style="border-right: 1px solid gray; width: 20px; text-align: center;"><a href="{% url 'resultcrilst' %}" target="mydis">Result</a></td>
+{% if rowuser == 0 %}
+<td style="border-right: 1px solid gray; width: 20px; text-align: center;"><a href="{% url 'userlist' %}" target="mydis">System User</a></td>
+{% endif %}
+<td style="border-right: 1px solid gray; width: 20px; text-align: center;"><a href="{% url 'index' %}">Log-Out</a></td>
+</tr>
+</table>
+</center>
+</div>
+<div id ="content">
+<iframe src ="{% url 'resultcrilst' %}" frameborder="0" name ="mydis" style="position: absolute; width: 99%; height: 750px; left:0px; top: 25%;" align="center"></iframe>
+</div>
+<script type="text/javascript">
+function disresult(){
+    window.open("{% url 'resultin' %}", "mydis");
+}
+</script>
+{% endblock %}

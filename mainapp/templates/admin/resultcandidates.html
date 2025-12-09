@@ -1,0 +1,60 @@
+{% extends 'admin/adminpage.html' %}
+{% load static %}
+{% block content %}
+<meta http-equiv="refresh" content="5">
+<link rel="stylesheet" type="text/css" href="{% static 'admin/cssdesign/design.css' %}"/>
+<style>
+
+.CSSTableGenerator { margin:0px;padding:0px;width:70%;box-shadow: 10px 10px 5px #888888;border:1px solid #000000; border-radius:6px; }
+.CSSTableGenerator table{ border-collapse: collapse; width:100%; height:100%; margin:0px;padding:0px; }
+.CSSTableGenerator tr:nth-child(odd){ background-color:#d8d8d8; }
+.CSSTableGenerator tr:nth-child(even){ background-color:#ffffff; }
+.CSSTableGenerator td{ vertical-align:middle; border:1px solid #000000; border-width:0px 1px 1px 0px; text-align:center; padding:11px; font-size:38px; font-family:Arial; font-weight:bolder; color:#000000; }
+.CSSTableGenerator tr:first-child td{ background: linear-gradient(to bottom, #87d35b 5%, #067c00 100%); background-color:#87d35b; border:0px solid #000000; text-align:center; font-size:38px; font-family:Arial; font-weight:bolder; color:#ffffff; }
+.blinkwin { animation: blinkwin 1s infinite; }
+@keyframes blinkwin { from { background-color: red; } to { background-color: inherit; } }
+a { font-size:40px; font-family:Arial; font-weight:bolder; color:#ffffff; text-decoration: none; }
+a:active { text-decoration: underline; }
+</style>
+<script>
+function judgepagerec(judid, jcri) {
+    window.open("{% url 'resultcandiindi' %}?mycanid=" + judid + "&mycrid=" + jcri, null, "dialogwidth: 800; dialogheight: 700; resizable: yes;center : yes;");
+}
+</script>
+<body style="background-color:#FFFFff;">
+<center>
+{% for event in event_data %}
+    <p style="font-family: serif,arial; font-size:x-large; font-weight: bold; color: red;" align="center">
+        {{ event.event.evdes }} - {{ event.criteria_title }} ({{ event.criteria_percent }}%)
+    </p>
+    <table class="CSSTableGenerator">
+        <tr>
+            <td>Judges</td>
+            {% for candidate in event.candidates %}
+                <td><a href="#" onclick="judgepagerec('{{ candidate.id }}', '{{ event.event.id }}');">Candidate<br/>{{ candidate.cano }}</a></td>
+            {% endfor %}
+        </tr>
+        {% for row in event.judge_rows %}
+        <tr>
+            <td>{{ row.number }}</td>
+            {% for score in row.scores %}
+                <td>
+                    {{ score.score }}
+                    {% if score.waiting %}
+                        <img src="{% static 'admin/icon/ajax-loader.gif' %}" alt="" style="visibility:visible; width: 20px; height: 20px; margin: -25px 0 0 -25px;"/>
+                    {% endif %}
+                </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+        <tr>
+            <td>Total</td>
+            {% for total in event.totals %}
+                <td>{{ total }}</td>
+            {% endfor %}
+        </tr>
+    </table>
+{% endfor %}
+</center>
+</body>
+{% endblock %}

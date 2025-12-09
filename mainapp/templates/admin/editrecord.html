@@ -1,0 +1,173 @@
+{% extends 'admin/adminpage.html' %}
+{% load static %}
+{% block content %}
+<style>
+#editbox{
+    width:300px;
+    height:auto;
+    background-color:#00CC00;
+    top:10px;
+    position:absolute;left:110px;top:10px; 
+    left:75px;
+    padding:7px;
+    border-radius: 11px;
+    border: 1px solid #096600;
+    box-shadow: 0px 1px 3px rgba(255,255,255,0.5), inset 0px 0px 2px rgba(255,255,255,1);
+    background: linear-gradient(to bottom, #FFE4B5, #FFEFD5);
+}
+.button {
+    display: block; font-size: 12px; text-decoration: none!important; font-family: Arial;
+    padding: 8px 8px; width: 80px; height: 12px; margin:auto; text-align: center;
+    border-radius: 8px; box-shadow: inset 0px 0px 2px #fff;
+}
+.button:active { box-shadow: inset 0px 0px 3px #999; }
+.grey { color: #444; border: 1px solid #d0d0d0; background: linear-gradient(#ededed, #e1e1e1); text-shadow: 1px 1px 1px #fff; background-color: #e1e1e1; }
+.grey:hover { border: 1px solid #b0b0b0; background: linear-gradient(#e1e1e1, #ededed); background-color: #ededed; }
+.grey:active {border: 1px solid #666;}
+</style>
+<script>
+function closewin(){ window.close(); }
+// The edit* JS functions should use fetch/ajax to call Django endpoints for saving records.
+</script>
+<body>
+{% if getctrl == 'eventedit' %}
+<div id="editbox">
+<form method="post" action="">
+  {% csrf_token %}
+  <p>Record modify {{ getevedes }}</p>
+  <input type="hidden" id="txteveid" name="txteveid" value="{{ geteveid }}"/>  
+  <label style="position: absolute; left: 20px; font-size: 14px;">Title Event</label>
+  <br/>
+  <input type="text" style="position: absolute; left: 20px; font-size: 14px; width: 250px;" id ="txtevedes" name = "txtevedes" value="{{ getevedes }}" required/>
+  <br/><br/>
+  <table width="268" style="width: auto; border: 1px; text-align: center; margin: auto;">
+  <tr>
+  <td style="text-align: center; width: 50%;">
+    <button type="submit" class="button grey">OK</button>
+  </td>
+  <td style="text-align: center; width: 50%;">
+    <a href="#" class="button grey" onclick="closewin(); return false;">Close</a>
+  </td>
+  <td id="seedis"></td>
+  </tr>
+  </table>
+</form>
+</div>
+{% elif getctrl == 'criedit' %}
+<div id="editbox">
+<p>Record modify {{ getevedes }}</p>
+  <input type="hidden" id="txteveid" value="{{ geteveid }}"/>  
+  <label style="position: absolute; left: 20px; font-size: 14px;">Title Criteria</label>
+  <br/>
+  <input type="text" style="position: absolute; left: 20px; font-size: 14px; width: 250px;" id ="txtevedes" name = "txtevedes" required/>
+  <br/>
+  <label style="position: absolute; left: 20px; font-size: 14px;">Percentage</label>
+  <br/>
+  <input type="text" style="position: absolute; left: 20px; font-size: 14px; width: 250px;" id ="txtper" name = "txtper" required/>
+<br/><br/>
+<table width="268" style="width: auto; border: 1px; text-align: center; margin: auto;">
+<tr>
+<td style="text-align: center; width: 50%;"><a href="#" class="button grey" onclick="/*editcri()*/;"> OK </a></td>
+<td style="text-align: center; width: 50%;"><a href="#" class="button grey" onclick="closewin();"> Close </a></td>
+<td id="seedis"></td>
+</tr>
+</table>
+</div>
+{% elif getctrl == 'editjudge' %}
+<div id="editbox">
+<p>Record modify {{ getevedes }}</p>
+<input type="hidden" id="txteveid" value="{{ geteveid }}"/>
+<label for="name" style="font-size: 100%">Event</label> <br/>
+<select id="optevent" name="optevent" style="font-size: 100%; width: 70%; height: 22px;" required>
+<option value="select">Select</option>
+{% for event in events %}
+<option value="{{ event.id }}">{{ event.evdes }}</option>
+{% endfor %}
+</select>
+<br/>
+<label for="name" style="font-size: 100%">Name</label> <br/>
+<input type="text" name="txtname" style="font-size: 100%" id="txtname" size="35" maxlength="70" class="text ui-widget-content ui-corner-all" required/><br/>
+<label for="uname" style="font-size: 100%">User Name</label><br/>
+<input type="text" name="txtuname" id="txtuname" size="30" maxlength="30" style="font-size: 100%" class="text ui-widget-content ui-corner-all" required/><br/>
+<label for="pass" style="font-size: 100%">Password</label><br/>
+<input type="password" name="txtpassword" id="txtpassword" size="30" maxlength="30" style="font-size: 100%" class="text ui-widget-content ui-corner-all" required /><br/>
+<label for="cpass" style="font-size: 100%">Confirm Password</label><br/>
+<input type="password" name="txtconpass" id ="txtconpass" size="30" maxlength="30" style="font-size: 100%" class="text ui-widget-content ui-corner-all" required />
+<table width="268" style="width: auto; border: 1px; text-align: center; margin: auto;">
+<tr>
+<td style="text-align: center; width: 50%;"><a href="#" class="button grey" onclick="/*editjudgerec()*/;"> OK </a></td>
+<td style="text-align: center; width: 50%;"><a href="#" class="button grey" onclick="closewin();"> Close </a></td>
+<td id="seedis"></td>
+</tr>
+</table>
+</div>
+{% elif getctrl == 'editcandi' %}
+<div id="editbox">
+<p>Record modify &nbsp;{{ getevedes }}</p>
+<input type="hidden" id="txteveid" value="{{ geteveid }}"/>
+<label for="name" style="font-size: 100%">Event</label> <br/>
+<select id="optcate" name="optcate" style="font-size: 100%; width: 70%; height: 22px;" required>
+<option value="select">Select</option>
+<option value="M">Male</option>
+<option value="F">Female</option>
+</select>
+<br/>
+<label for="name" style="font-size: 100%">Category</label> <br/>
+<select id="optevent" name="optevent" style="font-size: 100%; width: 70%; height: 22px;" required>
+<option value="select">Select</option>
+{% for event in events %}
+<option value="{{ event.id }}">{{ event.evdes }}</option>
+{% endfor %}
+</select>
+<br/>
+<label for="name" style="font-size: 100%">Contestant Number</label>     
+<input type="text" name="txtno" style="font-size: 100%" id="txtno" size="35" maxlength="70" class="text ui-widget-content ui-corner-all" required/>
+<br/>
+<label for="uname" style="font-size: 100%">Name</label>
+<br/>
+<input type="text" name="txtname" id="txtname" size="35" maxlength="70" style="font-size: 100%" class="text ui-widget-content ui-corner-all" required/>
+<br/>
+<label for="pass" style="font-size: 100%">Course</label>
+<br/>
+<input type="text" name="txtcourse" id="txtcourse" size="35" maxlength="30" style="font-size: 100%" class="text ui-widget-content ui-corner-all" required />
+<br/>
+<table width="268" style="width: auto; border: 1px; text-align: center; margin: auto;">
+<tr>
+<td style="text-align: center; width: 50%;"><a href="#" class="button grey" onclick="/*editcandidates()*/;"> OK </a></td>
+<td style="text-align: center; width: 50%;"><a href="#" class="button grey" onclick="closewin();"> Close </a></td>
+<td id="seedis"></td>
+</tr>
+</table>
+</div>
+{% elif getctrl == 'edituser' %}
+<div id="editbox">
+<p>Record modify {{ getevedes }}</p>
+<input type="hidden" id="txteveid" value="{{ geteveid }}"/>  
+<label for="name" style="font-size: 100%">User Level</label> <br/>
+{% if getlevel != '0' %}
+<select id="optlevel" name="optlevel" style="font-size: 100%; width: 70%; height: 22px;" required>
+<option value="select">Select</option>    
+<option value="1">Administrator</option>    
+<option value="2">User</option>
+</select>
+{% endif %}
+<br/>
+<label for="name" style="font-size: 100%">Name</label> <br/>
+<input type="text" name="txtname" style="font-size: 100%" id="txtname" size="35" maxlength="70" class="text ui-widget-content ui-corner-all" required/><br/>
+<label for="uname" style="font-size: 100%">User Name</label><br/>
+<input type="text" name="txtuname" id="txtuname" size="30" maxlength="30" style="font-size: 100%" class="text ui-widget-content ui-corner-all" required/><br/>
+<label for="pass" style="font-size: 100%">Password</label><br/>
+<input type="password" name="txtpassword" id="txtpassword" size="30" maxlength="30" style="font-size: 100%" class="text ui-widget-content ui-corner-all" required /><br/>
+<label for="cpass" style="font-size: 100%">Confirm Password</label><br/>
+<input type="password" name="txtconpass" id ="txtconpass" size="30" maxlength="30" style="font-size: 100%" class="text ui-widget-content ui-corner-all" required />
+<table width="268" style="width: auto; border: 1px; text-align: center; margin: auto;">
+<tr>
+<td style="text-align: center; width: 50%;"><a href="#" class="button grey" onclick="/*edituserec()*/;"> OK </a></td>
+<td style="text-align: center; width: 50%;"><a href="#" class="button grey" onclick="closewin();"> Close </a></td>
+<td id="seedis"></td>
+</tr>
+</table>
+</div>
+{% endif %}
+</body>
+{% endblock %}

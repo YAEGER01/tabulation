@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'admin/cssdesign/design.css' %}"/>
+<style>
+.CSSTableGenerator { margin:0px auto;padding:0px;width:80%;box-shadow: 4px 4px 6px #888888;border:2px solid #4CAF50; border-radius:6px; }
+.CSSTableGenerator table{ border-collapse: collapse; width:100%; height:100%; margin:0px;padding:0px; }
+.CSSTableGenerator tr:nth-child(odd){ background-color:#f6fff6; }
+.CSSTableGenerator tr:nth-child(even){ background-color:#ffffff; }
+.CSSTableGenerator th, .CSSTableGenerator td{ vertical-align:middle; border:1px solid #4CAF50; text-align:center; padding:10px; font-size:16px; font-family:Arial; font-weight:600; color:#000000; }
+.CSSTableGenerator tr:first-child td{ background: #4CAF50; color: white; font-weight:700; }
+.blinkwin { background-color: #fff8dc; }
+</style>
+<div style="text-align:center;">
+    <p style="font-family: serif,arial; font-size:x-large; font-weight: bold; color: red; margin:18px 0;">{{ event.evdes }} - {{ titlecri }} ({{ per }}%)</p>
+    
+    <table class="CSSTableGenerator">
+    <tr>
+        <td>Rank</td>
+        <td>No.</td>
+        <td>Name</td>
+        {% for judge in judges %}
+            <td><a href="#" onclick="judgepagerec('{{ judge.ejid }}','{{ idcri }}');">Judge<br/>{{ forloop.counter }}</a></td>
+        {% endfor %}
+        <td>Total</td>
+    </tr>
+    {% for candidate in candidates %}
+    <tr class="{% if candidate.is_winner %}blinkwin{% endif %}">
+        <td>{{ candidate.rank }}</td>
+        <td>{{ candidate.cano }}</td>
+        <td>{{ candidate.cname }}</td>
+        {% for score in candidate.judge_scores %}
+            <td>
+                {% if score is None %}
+                    <span style="color:#666;">waiting</span>
+                    <img src="{% static 'admin/icon/ajax-loader.gif' %}" alt="" style="width: 14px; height: 14px; margin-left:6px;"/>
+                {% else %}
+                    {{ score }}
+                {% endif %}
+            </td>
+        {% endfor %}
+        <td align="center">{{ candidate.total_score }}</td>
+    </tr>
+    {% endfor %}
+    </table>
+    <table style="width:80%; margin:12px auto; border:0;">
+    <tr>
+    {% for judge in judges %}
+            <td style="text-align:center; border:0; vertical-align:top;">
+                <div style="margin-top:6px; text-decoration:underline; font-weight:700;">{{ judge.jname }}</div>
+                <div>Judge {{ forloop.counter }}</div>
+            </td>
+    {% endfor %}
+    </tr>
+    </table>
+</div>
+<script type="text/javascript">
+function judgepagerec(judid, jcri) {
+    window.open('/admin/judgepagecri/?myjid=' + judid + '&mycrid=' + jcri, 'mydis');
+}
+</script>
+{% endblock %}

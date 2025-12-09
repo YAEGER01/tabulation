@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'admin/cssdesign/design.css' %}"/>
+<meta http-equiv="refresh" content="5">
+<style>
+.CSSTableGenerator { margin:0px auto;padding:0px;width:80%;box-shadow: 4px 4px 6px #888888;border:2px solid #4CAF50; border-radius:6px; }
+.CSSTableGenerator table{ border-collapse: collapse; width:100%; height:100%; margin:0px;padding:0px; }
+.CSSTableGenerator tr:nth-child(odd){ background-color:#f6fff6; }
+.CSSTableGenerator tr:nth-child(even){ background-color:#ffffff; }
+.CSSTableGenerator th, .CSSTableGenerator td{ vertical-align:middle; border:1px solid #4CAF50; text-align:center; padding:10px; font-size:16px; font-family:Arial; font-weight:600; color:#000000; }
+.CSSTableGenerator tr:first-child td{ background: #4CAF50; color: white; font-weight:700; }
+.blinkwin { background-color: #fff8dc; }
+</style>
+<center>
+<p style="font-family: serif,arial; font-size:x-large; font-weight: bold; color: red;" align="center">{{ rowevdes }}</p>
+<table class="CSSTableGenerator">
+    <tr>
+        <td>Rank</td>
+        <td>Candidate #</td>
+        {% for judge in judges %}
+            <td><a href="#" onclick="judgepagerec('{{ judge.ejid }}');">Judge<br/>{{ forloop.counter }}</a></td>
+        {% endfor %}
+        <td>Total</td>
+    <td><a href="#" onclick="openResultDetails(); return false;">Average</a></td>
+    </tr>
+    {% for candidate in candidates %}
+    <tr class="{% if candidate.is_winner %}blinkwins{% endif %}">
+        <td>{{ forloop.counter }}</td>
+        <td>{{ candidate.cano }}</td>
+        {% for score in candidate.judge_scores %}
+            <td>{{ score }}</td>
+        {% endfor %}
+        <td>{{ candidate.total_score }}</td>
+        <td align="center">{{ candidate.grade_score }}</td>
+    </tr>
+    {% endfor %}
+    {% if approvals %}
+    <style>
+    .approval-loader {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        margin: -25px 0 0 -25px;
+        background: url('{% static 'admin/icon/ajax-loader.gif' %}') no-repeat center center;
+        background-size: contain;
+    }
+    .approval-loader.hidden { visibility: hidden; }
+    .approval-loader.visible { visibility: visible; }
+    </style>
+    <tr>
+        {% for approval in approvals %}
+            <td>
+                <span class="approval-status">{{ approval.status }}</span>
+                <span class="approval-loader {% if approval.visible == 'visible' %}visible{% else %}hidden{% endif %}"></span>
+            </td>
+        {% endfor %}
+    </tr>
+    {% endif %}
+</table>
+<table width="90%">
+<tr>
+{% for judge in judges %}
+    <td align="center"><br /><label style="text-decoration: underline;">{{ judge.jname }}</label><br/>Judge {{ forloop.counter }}</td>
+{% endfor %}
+</tr>
+</table>
+</center>
+<script type="text/javascript">
+function judgepagerec(judid) {
+    window.open('/admin/judgepage/?myjid=' + judid, 'mydis');
+}
+function openResultDetails() {
+    var url = "{% url 'admin_resultdetails' %}?myevid={{ getevid }}&mynores={{ getnores }}";
+    window.open(url, null, 'dialogwidth: 800; dialogheight: 700; resizable: yes;center : yes;');
+}
+</script>
+{% endblock %}

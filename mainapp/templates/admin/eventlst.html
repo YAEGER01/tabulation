@@ -1,0 +1,108 @@
+{% extends 'admin/adminpage.html' %}
+{% load static %}
+{% block content %}
+{% csrf_token %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+function deletevents(veveid) {
+    if(confirm('Are you sure you want to delete\n Do you wish to continue?')) {
+        fetch("{% url 'deleterecord' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: 'myeveid=' + veveid + '&mycontrol=event&confirm=yes'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'ok') {
+                window.location.reload();
+            } else {
+                alert(data.message || 'Error deleting event');
+            }
+        });
+    }
+}
+$(function() {
+    $('#itemadd').click(function(e) {
+        e.preventDefault();
+        // Reset form for new event
+        $('#saveevent')[0].reset();
+        $('#saveevent input[name=txteveid]').val('');
+        $('#formitem').show();
+    });
+    $('.edit-event').click(function(e) {
+        e.preventDefault();
+        // Set form for editing
+        var id = $(this).data('id');
+        var evdes = $(this).data('evdes');
+        if ($('#saveevent input[name=txteveid]').length === 0) {
+            $('#saveevent').prepend('<input type="hidden" name="txteveid" id="txteveid" />');
+        }
+        $('#saveevent input[name=txteveid]').val(id);
+        $('#saveevent input[name=txtevedes]').val(evdes);
+        $('#formitem').show();
+    });
+});
+</script>
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="-1">
+<link rel="stylesheet" type="text/css" href="{% static 'admin/cssdesign/design.css' %}"/>
+<style>
+table { border-collapse:collapse; }
+td { padding:15px; }
+table, td, th { border:1px solid green; }
+th { background: linear-gradient(to bottom, #FFFFFF 3%, #D1D1D1 90%); color:black; }
+a { text-decoration: none; font-weight: normal; color: blue; }
+a:visited { color: #000000; }
+a:hover { color: #000000; }
+a:active { text-decoration: underline; color: #000000; }
+.CSSButton { border: 1px solid #D1D1D1; background: linear-gradient(to bottom, #FFFFFF 3%, #D1D1D1 90%); background-color: #FFFFFF; box-shadow: inset 0px 0px 3px -1px #FFFFFF; border-radius: 8px; text-shadow: 0px 1px 1px #FFFFFF; font-weight:normal; margin: 1px 5px; padding: 6px 0px; color: #000000; letter-spacing: 1px; font-family: Arial, Helvetica, sans-serif; font-size: 12px; width: 112px; text-transform: capitalize; text-align: center; text-decoration: none; cursor: pointer; display: inline-block; }
+.CSSButton:hover { background: linear-gradient(to bottom, #D1D1D1 3%, #FFFFFF 90%); background-color: #D1D1D1; }
+.CSSButton:active { position: relative; top: 1px; left: 0px; }
+</style>
+<center>
+<table style="border:0px; width:60%">
+<tr>
+<td style="border:0px; width:75%"><b>List of Events!</b></td>
+<td style="border:0px; width: 25%;">
+    <a href="#" id="itemadd"><img src="{% static 'icon/note-add-icon.png' %}" alt="" style="width: 30px; height: 30px;"/><b>New</b></a>
+    <a href="#" onclick="window.location.reload();"><img src="{% static 'icon/refresh.png' %}" alt="" style="width: 30px; height: 30px;"/><b>Refresh</b></a>
+</td>
+</tr>
+</table>
+<table width='70%'>
+<tr>
+<th style=" width:5%">No.</th>
+<th style=" width:50%">Title</th>
+<th style=" width:20%"></th>
+</tr>
+{% for event in events %}
+<tr onmouseover="this.bgColor='#aaFFaa'" onmouseout="this.bgColor='#ffffff'">
+<td style=" width:5%">{{ forloop.counter }}</td>
+<td style=" width:50%">{{ event.evdes }}</td>
+<td style=" width:10%">
+    <a href="#" class="edit-event" data-id="{{ event.evid }}" data-evdes="{{ event.evdes }}"><img src="{% static 'icon/mail_new.png' %}" alt="" style="width: 30px; height: 30px;" title="Edit"/></a>
+    <a href="#" onclick="deletevents('{{ event.evid }}');"><img src="{% static 'icon/Delete-icon.png' %}" alt="" style="width: 30px; height: 30px;" title="Delete"/></a>
+</td>
+</tr>
+{% endfor %}
+</table>
+</center>
+<div id="formitem" title="Add Record" style="display:none; position:fixed; top:20%; left:0; right:0; margin:auto; width:350px; z-index:1000; background:#fff; border-radius:10px; box-shadow:0 0 10px #888; padding:20px;">
+    <p class="tipsfields" style="font-size: 90%">All form fields are required.</p>
+    <form name="saveevent" id="saveevent" method="post" action="{% url 'editrecord' %}">
+        {% csrf_token %}
+        <input type="hidden" name="txteveid" id="txteveid" />
+        <fieldset style="border:none;">
+            <label for="txtevedes" style="font-size: 100%">Title of Event</label><br/>
+            <input type="text" name="txtevedes" id="txtevedes" style="font-size: 100%; width: 90%; margin-bottom:10px;" maxlength="150" required/>
+            <br/>
+            <span class="CSSButton" style="width: 100px; margin-left: 0px; font-size: 100%" onclick="document.getElementById('saveevent').submit();">Save</span>
+            <span class="CSSButton" style="width: 100px; margin-left: 0px; font-size: 100%" onclick="$('#formitem').hide();">Cancel</span>
+        </fieldset>
+    </form>
+</div>
+
+{% endblock %}

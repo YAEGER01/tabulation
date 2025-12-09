@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'admin/cssdesign/design.css' %}"/>
+<center>
+{% for event in events %}
+<p style="font-family: serif,arial; font-size:x-large; font-weight: bold; color: red;" align="center">{{ event.evdes }}</p>
+
+<style>
+.CSSTableGenerator { margin:0px;padding:0px;width:80%;box-shadow: 10px 10px 5px #888888;border:2px solid #4CAF50; border-radius:6px; }
+.CSSTableGenerator table{ border-collapse: collapse; width:100%; height:100%; margin:0px;padding:0px; }
+.CSSTableGenerator tr:nth-child(odd){ background-color:#f6fff6; }
+.CSSTableGenerator tr:nth-child(even){ background-color:#ffffff; }
+.CSSTableGenerator th, .CSSTableGenerator td{ vertical-align:middle; border:1px solid #4CAF50; text-align:center; padding:12px; font-size:18px; font-family:Arial; font-weight:600; color:#000000; }
+.CSSTableGenerator tr:first-child th{ background: linear-gradient(to bottom, #b2ffb2 5%, #4CAF50 100%); background-color:#4CAF50; border:0px solid #4CAF50; text-align:center; font-size:18px; font-family:Arial; font-weight:bold; color:#ffffff; }
+</style>
+
+<table class="CSSTableGenerator">
+    <tr>
+        <th style="width:7%;">No.</th>
+        <th style="width:38%;">Title</th>
+        <th style="width:13%;">Percentage</th>
+        <th style="width:18%;">Event</th>
+        <th style="width:24%;">
+            <a href="{% url 'resultin' %}?myeveid={{ event.evid }}" style="color:#1976d2; text-decoration:underline;">Result</a><hr style="margin: 6px 0;"/>
+            <span style="font-size: 15px; font-weight: 500;">Judges | Candidates</span>
+        </th>
+    </tr>
+    {% for cri in event.criteria %}
+    <tr>
+        <td style="text-align: center;">{{ forloop.counter }}</td>
+        <td style="text-align: left; padding-left:12px;">{{ cri.ctitle }}</td>
+        <td>{{ cri.cper }}%</td>
+        <td>{{ event.evdes }}</td>
+        <td>
+            <a href="#" class="editrecord-btn" data-baseurl="{% url 'resultcriteria' %}" data-scri="{{ cri.scri }}" data-ctitle="{{ cri.ctitle|escapejs }}" data-cper="{{ cri.cper }}"><img src="{% static 'icon/Judge-icon.png' %}" alt="Judges" style="width: 28px; height: 28px; vertical-align: middle; margin-right: 10px;" title="Judges"/></a>
+            <a href="#" class="candiresult-btn" data-scri="{{ cri.scri }}" data-ctitle="{{ cri.ctitle|escapejs }}" data-cper="{{ cri.cper }}"><img src="{% static 'icon/candidates-icon.png' %}" alt="Candidates" style="width: 28px; height: 28px; vertical-align: middle;" title="Candidates"/></a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endfor %}
+</center>
+<script type="text/javascript">
+document.querySelectorAll('.editrecord-btn').forEach(function(btn) {
+    btn.onclick = function() {
+        var baseurl = btn.getAttribute('data-baseurl');
+        var scri = btn.getAttribute('data-scri');
+        var ctitle = btn.getAttribute('data-ctitle');
+        var cper = btn.getAttribute('data-cper');
+        var url = baseurl + '?mycontrol=criedit&myeveid=' + encodeURIComponent(scri) + '&mydes=' + encodeURIComponent(ctitle) + '&myper=' + encodeURIComponent(cper);
+        window.open(url, null, 'dialogwidth: 800; dialogheight: 700; resizable: yes;center : yes;');
+        window.location.reload();
+    };
+});
+document.querySelectorAll('.candiresult-btn').forEach(function(btn) {
+    btn.onclick = function() {
+        var scri = btn.getAttribute('data-scri');
+        var ctitle = btn.getAttribute('data-ctitle');
+        var cper = btn.getAttribute('data-cper');
+        var url = '/admin/resultcandidates/?mycontrol=criedit&myeveid=' + encodeURIComponent(scri) + '&mydes=' + encodeURIComponent(ctitle) + '&myper=' + encodeURIComponent(cper);
+        window.open(url, null, 'dialogwidth: 800; dialogheight: 700; resizable: yes;center : yes;');
+        window.location.reload();
+    };
+});
+</script>
+{% endblock %}

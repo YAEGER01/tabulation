@@ -1,0 +1,135 @@
+{% load static %}
+<!DOCTYPE html> <!-- ETO PINAKA MAIN PAGE -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Sign in</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="icon" type="image/ico" href="{% static 'images/tablogo.png' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <style type="text/css">
+        body {
+            background-color: #000;
+            background-image: url('{% static "judge/images/bg.png" %}');
+            background-repeat: no-repeat;
+            background-position: left 30px;
+            background-size: 42% auto;
+            color: #fff;
+        }
+        .login-panel {
+            position: absolute;
+            right: 6%;
+            top: 12%;
+            width: 36%;
+            max-width: 520px;
+            min-width: 320px;
+            z-index: 50;
+        }
+        #hdmsg { opacity:1; transition:opacity 500ms; color: #f00; }
+        #hdmsg.whide { opacity:0; }
+        .login-panel .panel { background: rgba(255,255,255,0.95); color: #222; }
+        .login-panel .form-control { font-size: 20px; height:48px; }
+        .login-panel .btn { font-size: 20px; height:48px; }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-default navbar-static" role="navigation" style="border-radius: 0px;opacity:0.8;">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a href="/" class="navbar-brand" style="font-weight:normal; font-size:16px; font-weight:bold; margin-top:-6px; display:inline;">
+                <div>
+                    <img src="{% static 'images/tablogo.png' %}" style="height:30px; width:30px; position:relative; margin-top:-1px;">
+                    &nbsp;Technical Activity Board System v1.5.11
+                </div>
+            </a>
+        </div>
+        <div class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a role="button" class="dropdown-toggle" data-toggle="dropdown">
+                        <span class="glyphicon glyphicon-time"></span> Today is: {{ today }} <span id="time"></span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="login-panel">
+    <div class="panel panel-default">
+        <div class="panel-heading" style="font-size:26px; text-align:center; font-weight:700;">
+            Sign in to continue
+        </div>
+        <div class="panel-body">
+            <form method="post" name="logpage" action="">
+                {% csrf_token %}
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                        <input class="form-control" placeholder="Username" required autofocus id="username" name="username" value="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                        <input type="password" class="form-control" placeholder="Password" required id="cpass" name="cpass" value="">
+                    </div>
+                </div>
+                <div class="form-group" style="text-align:center; margin-top:10px;">
+                    <button type="submit" class="btn btn-primary" name="logctrl" id="logctrl">Sign in <span class="glyphicon glyphicon-log-in"></span></button>
+                </div>
+            </form>
+        </div>
+        <div class="panel-footer">
+            <label id="hdmsg">{{ msguid|default:'' }}<br>{{ message|default:'' }}</br></label>
+        </div>
+    </div>
+</div>
+<footer class="bs-footer navbar-fixed-bottom">
+    <div class="container-fluid newfooter" style="color:#666;">
+        <div class="row">
+            <div class="col-sm-6">
+                <p class="text-left">
+                    <strong>Copyright &copy; 2016 GTechnology All rights reserved.</strong>
+                </p>
+            </div>
+            <div class="col-sm-6" style="text-align:right;">
+            </div>
+        </div>
+    </div>
+</footer>
+<script type="text/javascript">
+setTimeout(function(){
+    document.getElementById('hdmsg').className = 'whide';
+}, 2500);
+</script>
+<script type="text/javascript">
+
+function updateHeaderTime(){
+    try{
+        var now = new Date();
+        var hh = now.getHours(); var mm = now.getMinutes(); var ss = now.getSeconds();
+        if(mm<10) mm = '0'+mm; if(ss<10) ss='0'+ss;
+        var timeStr = hh+':'+mm+':'+ss;
+        var timeSpan = document.getElementById('time');
+        if(timeSpan) timeSpan.textContent = ' ' + timeStr;
+       
+        var dropdown = document.querySelector('.navbar .dropdown-toggle');
+        if(dropdown){
+            var text = dropdown.textContent || '';
+            if(text.indexOf('None') !== -1 || text.trim().endsWith('Today is:')){
+                
+                var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+                var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+                var dateStr = days[now.getDay()] + ', ' + months[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear();
+               
+                dropdown.innerHTML = '<span class="glyphicon glyphicon-time"></span> Today is: ' + dateStr + ' <span id="time"> ' + timeStr + '</span>';
+            }
+        }
+    }catch(e){ console.warn('time update failed', e); }
+}
+updateHeaderTime();
+setInterval(updateHeaderTime, 1000);
+</script>
+</body>
+</html>

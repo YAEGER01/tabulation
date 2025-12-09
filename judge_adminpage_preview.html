@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabulator MS Sanfermin</title>
+    
+    
+</head>
+<body>
+    
+<nav class="navbar navbar-default navbar-static" role="navigation" style="border-radius: 0px;opacity:0.8;">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a href="/" class="navbar-brand" style="font-weight:normal; font-size:16px; font-weight:bold; margin-top:-6px; display:inline;">
+                <div>
+                    <img src="/static/images/tablogo.png" style="height:30px; width:30px; position:relative; margin-top:-1px;">
+                    &nbsp;Technical Activity Board System v1.5.123
+                </div>
+            </a>
+        </div>
+        <div class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a role="button" class="dropdown-toggle" data-toggle="dropdown">
+                        <span class="glyphicon glyphicon-time"></span> Today is:  <span id="time"></span>
+                    </a>
+                    <p>Welcome &nbsp; DUTERTE &nbsp; <a href="/accounts/logout/"><span style="font-family: Arial; font-size:12px; color: #ffffff; font-style:normal; font-weight: bold;">Log-Out</span></a></p>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<style>
+    /* Page background: large left image (logo) like the PHP layout */
+    body {
+        background-color: #000;
+        background-image: url('/static/images/fiestabackground.jfif');
+        background-repeat: no-repeat;
+        background-position: left center;
+        background-size: 48% auto;
+    }
+    /* Scoreboard panel on the right */
+    .scoreboard {
+        position: absolute;
+        right: 4%;
+        top: 12%;
+        width: 44%;
+        max-width: 620px;
+        min-width: 360px;
+        z-index: 50;
+    }
+    .scoreboard .panel {
+        opacity: 0.95;
+        background: #f2f2f2;
+        border-radius: 6px;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+    }
+    .scoreboard .panel-heading p { color: #c62828; font-size: 28px; font-weight: 700; }
+    .scoreboard table.table { margin-bottom: 0; }
+    .scoreboard table.table th, .scoreboard table.table td { font-size: 20px; padding: 16px 12px; }
+    .scoreboard table.table th { text-align: center; }
+    .scoreboard table.table td { text-align: center; }
+    .scoreboard table.table td:first-child, .scoreboard table.table th:first-child { text-align:left; padding-left:22px; }
+    .scoreboard .panel-footer { padding: 12px; }
+</style>
+
+<div class="scoreboard">
+    <div class="panel panel-default">
+        <div class="panel-heading" style="font-size:25px; opacity:2;">
+            <p style="font-family: serif,arial; font-size:x-large; font-weight: bold;" align="center">Test Event</p>
+        </div>
+        <div class="panel-body">
+                    
+        </div>
+        <div class="panel-footer" style="height:80px; background:#eee;">
+            <div style="display:flex; gap:12px; align-items:center;">
+                <button class="btn btn-default" style="font-size:18px; padding:8px 14px;" onclick="location.reload();">Refresh</button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+    <meta http-equiv="refresh" content="5">
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="/static/bootstrap/js/bootstrap.min.js"></script>
+<script>
+function savescore(inputscore,namebox,canid,crid,evid,jid,criper,cripermin) {
+    var getscore = inputscore.value.trim();
+    getscore = parseFloat(getscore);
+    if(getscore === "" || isNaN(getscore)) { alert('Please input valid score'); inputscore.focus(); return; }
+    var getlowscore = parseFloat(cripermin);
+    if(getscore > criper) {
+        alert("Inputed score not more than " + criper);
+        inputscore.focus();
+        return;
+    }
+    if(getscore < getlowscore) {
+        alert("Entered score not less than " + getlowscore);
+        inputscore.focus();
+        inputscore.value = 0;
+        return true;
+    }
+    $.get("/saverecord/", {
+        myctrl: 'inputscore',
+        myinscore: getscore,
+        mycanid: canid,
+        mycrid: crid,
+        myevid: evid,
+        myjid: jid
+    });
+}
+function subscore() {
+    var vjid = '4003';
+    var vevid = '4';
+    $.get("/saverecord/", {
+        myctrl: 'submitscore',
+        myjid: vjid,
+        myevid: vevid
+    }, function() { location.reload(true); });
+}
+function onfocusscore(inputscore) {
+    inputscore.focus();
+    inputscore.select();
+}
+function checkIt(evt) {
+    var ex = /^[0-9]+\.?[0-9]*$/;
+    if(!ex.test(evt.value)) {
+        evt.value = evt.value.substring(0, evt.value.length - 1);
+    }
+}
+$(document).ready(function(){
+    $('input').keyup(function(e){
+        if(e.which==13 || e.which==40) {
+            $(this).closest('tr').next().find('td:eq('+$(this).closest('td').index()+')').find('input').focus();
+        } else if(e.which==38) {
+            $(this).closest('tr').prev().find('td:eq('+$(this).closest('td').index()+')').find('input').focus();
+        }
+    });
+});
+</script>
+
+    
+</body>
+</html>

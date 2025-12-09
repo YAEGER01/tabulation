@@ -1,0 +1,22 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/cssdesign/design.css' %}"/>
+    <title>Department Head Sidebar</title>
+</head>
+<body>
+<div id="leftdesign">
+    <div id="leftfont">
+        <table>
+            <tr><td><a href="{% url 'facultylist' %}" target="mycontent">List of Department Heads</a></td></tr>
+            <tr><td><a href="{% url 'adddepthead' %}" target="mycontent">Add Department Head</a></td></tr>
+            <tr><td><a href="{% url 'changepass' %}" target="mycontent">Change Password</a></td></tr>
+            <tr><td><a href="{% url 'logout' %}" target="mycontent">Log-Out</a></td></tr>
+        </table>
+    </div>
+</div>
+<iframe frameborder="0" src="" name="mycontent" style="position: absolute; width: 830px; height: 750px; left:300px; top: 130px;"></iframe>
+</body>
+</html>

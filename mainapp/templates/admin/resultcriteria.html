@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<meta http-equiv="refresh" content="5">
+<link rel="stylesheet" type="text/css" href="{% static 'admin/cssdesign/design.css' %}"/>
+<center>
+<p style="font-family: serif,arial; font-size:x-large; font-weight: bold; color:red;" align="center">
+    <label id="criteria-details-label"
+           data-url="{% url 'resultcriteriadetails' %}"
+           data-idcri="{{ idcri|escapejs }}"
+           data-titlecri="{{ titlecri|escapejs }}"
+           data-per="{{ per|escapejs }}"
+           style="cursor:pointer;"
+    >
+        {{ event.evdes }} - {{ titlecri }} ({{ per }}%)
+    </label>
+<script type="text/javascript">
+document.getElementById('criteria-details-label').onclick = function() {
+    var el = this;
+    var url = el.getAttribute('data-url') +
+        '?myevid=' + encodeURIComponent(el.getAttribute('data-idcri')) +
+        '&mydes=' + encodeURIComponent(el.getAttribute('data-titlecri')) +
+        '&myper=' + encodeURIComponent(el.getAttribute('data-per'));
+    window.open(url, null, 'dialogwidth: 1200; dialogheight: 700; resizable: yes;center : yes;scroll:yes;');
+};
+</script>
+</p>
+
+<table class="CSSTableGenerator">
+    <tr>
+        {% for judge in judges %}
+            <td><a href="#" onclick="judgepagerec('{{ judge.ejid }}','{{ idcri }}');">Judge<br/>{{ forloop.counter }}</a></td>
+        {% endfor %}
+        <td>Total</td>
+    </tr>
+    {% for candidate in candidates %}
+    <tr class="{% if candidate.is_winner %}blinkwin{% endif %}">
+        {% for score in candidate.judge_scores %}
+            <td>{{ score }}</td>
+        {% endfor %}
+        <td>{{ candidate.total_score }}</td>
+    </tr>
+    {% endfor %}
+</table>
+<style>
+.CSSTableGenerator { margin:0px;padding:0px;width:70%;box-shadow: 10px 10px 5px #888888;border:1px solid #000000; border-radius:6px; }
+.CSSTableGenerator table{ border-collapse: collapse; width:100%; height:100%; margin:0px;padding:0px; }
+.CSSTableGenerator tr:nth-child(odd){ background-color:#d8d8d8; }
+.CSSTableGenerator tr:nth-child(even){ background-color:#ffffff; }
+.CSSTableGenerator td{ vertical-align:middle; border:1px solid #000000; border-width:0px 1px 1px 0px; text-align:center; padding:11px; font-size:38px; font-family:Arial; font-weight:bolder; color:#000000; }
+.CSSTableGenerator tr:first-child td{ background: linear-gradient(to bottom, #87d35b 5%, #067c00 100%); background-color:#87d35b; border:0px solid #000000; text-align:center; font-size:38px; font-family:Arial; font-weight:bolder; color:#ffffff; }
+.blinkwin { animation: blinkwin 1s infinite; }
+@keyframes blinkwin { from { background-color: red; } to { background-color: inherit; } }
+a { font-size:40px; font-family:Arial; font-weight:bolder; color:#ffffff; text-decoration: none; }
+a:active { text-decoration: underline; }
+</style>
+</center>
+<script type="text/javascript">
+function judgepagerec(judid, jcri) {
+    window.open('/admin/judgepagecri/?myjid=' + judid + '&mycrid=' + jcri, 'mydis');
+}
+</script>
+{% endblock %}

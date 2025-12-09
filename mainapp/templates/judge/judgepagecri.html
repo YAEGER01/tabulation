@@ -1,0 +1,95 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/cssdesign/design.css' %}"/>
+    <link rel="icon" type="image/png" href="{% static 'admin/images/logo.png' %}"/>
+    <title>ISU Scoring</title>
+    <style type="text/css">
+        a:link, a:visited, a:hover, a:active {
+            font-size:15px;
+            font-family:Arial;
+            font-weight:bold;
+            color:#ffffff;
+            text-decoration: none;
+        }
+        a:active { text-decoration: underline; }
+        .CSSTableGenerator {
+            margin:0px;padding:0px;
+            width:75%;
+            box-shadow: 10px 10px 5px #888888;
+            border:1px solid #000000;
+            border-radius:6px;
+        }
+        .CSSTableGenerator table{
+            border-collapse: collapse;
+            border-spacing: 0;
+            width:100%;
+            height:100%;
+            margin:0px;padding:0px;
+        }
+        .CSSTableGenerator tr:nth-child(odd){ background-color:#d8d8d8; }
+        .CSSTableGenerator tr:nth-child(even){ background-color:#ffffff; }
+        .CSSTableGenerator td{
+            vertical-align:middle;
+            border:1px solid #000000;
+            border-width:0px 1px 1px 0px;
+            text-align:left;
+            padding:11px;
+            font-size:16px;
+            font-family:Arial;
+            font-weight:bold;
+            color:#000000;
+        }
+        .CSSTableGenerator tr:first-child td{
+            background: linear-gradient(to bottom, #87d35b 5%, #067c00 100%);
+            background-color:#87d35b;
+            border:0px solid #000000;
+            text-align:center;
+            border-width:0px 0px 1px 1px;
+            font-size:18px;
+            font-family:Arial;
+            font-weight:bold;
+            color:#ffffff;
+        }
+        @keyframes blinkwin {
+          from { background-color: red; }
+          to { background-color: inherit; }
+        }
+        .blinkwin {
+          animation: blinkwin 1s infinite;
+        }
+    </style>
+</head>
+<body bgcolor="#FFFFff">
+<center>
+<p style="font-family: serif,arial; font-size:x-large; font-weight: bold; color: red;" align="center">{{ event.evdes }}</p>
+{% for category_block in table_data %}
+    <table class="CSSTableGenerator" align="center">
+        <tr>
+            <td>No.</td>
+            <td>Name</td>
+            {% for cri in criteria %}
+                <td>{{ cri.ctitle }}<br/>{{ cri.cper }}%</td>
+            {% endfor %}
+            <td>Total <br/>{% for cri in criteria %}{{ cri.cper }}{% endfor %}%</td>
+        </tr>
+        {% for candidate in category_block.candidates %}
+        <tr>
+            <td>{{ candidate.cano }}</td>
+            <td>{{ candidate.cname }}</td>
+            {% for score in candidate.scores %}
+                <td align="center">
+                    {{ score.rinscore }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <img src="{% static 'admin/icon/ajax-loader.gif' %}" alt="" width="10" height="10" style="visibility:{{ score.inviwait }}; margin: -25px 0 0 -25px;"/>
+                </td>
+            {% endfor %}
+            <td align="center">{{ candidate.total }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endfor %}
+</center>
+</body>
+</html>

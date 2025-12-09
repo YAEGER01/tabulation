@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'cssdesign/design.css' %}"/>
+<style>
+</style>
+<script>
+function judgepagerec(judid){
+    window.open("/judge/judgepage/?myjid="+judid, "_blank", "width=800,height=600");
+}
+function appresult(){
+    var vjid = '{{ getses }}';
+    fetch("{% url 'saverecord' %}?myctrl=resapp&myjid="+vjid)
+        .then(() => { window.close(); });
+}
+</script>
+<body bgcolor="#FFFFff">
+<p style="font-family: serif,arial; font-size:x-large; font-weight: bold; color: red;" align="center">{{ evdes }}</p>
+{% for table in category_tables %}
+    <table class="CSSTableGenerator">
+        <tr>
+            <td>Rank</td>
+            <td>#</td>
+            <td>Name</td>
+            {% for judge in table.judges %}
+                <td><a href="#" onclick="judgepagerec('{{ judge.ejid }}');">Judge<br/>{{ forloop.counter }}</a></td>
+            {% endfor %}
+            <td>Total</td>
+            <td>Average</td>
+        </tr>
+        {% for candidate in table.candidates %}
+        <tr>
+            <td>{{ candidate.rank }}</td>
+            <td>{{ candidate.cano }}</td>
+            <td>{{ candidate.cname }}</td>
+            {% for score in candidate.judge_scores %}
+                <td>{{ score }}</td>
+            {% endfor %}
+            <td>{{ candidate.total }}</td>
+            <td>{{ candidate.grade_score }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endfor %}
+<br/>
+<span class="CSSButton" onclick="appresult();">Approved</span>
+</body>
+{% endblock %}

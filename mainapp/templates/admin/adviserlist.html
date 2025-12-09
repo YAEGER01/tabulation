@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'admin/cssdesign/design.css' %}"/>
+<b>List of Adviser</b>
+<style>
+    table { border-collapse:collapse; }
+    td { padding:5px; }
+    table, td, th { border:1px solid green; }
+    th { background-color:green; color:white; }
+    a:link    { text-decoration: none; font-weight: normal; background-color: none; color: blue; }
+    a:visited { text-decoration: none; font-weight: bold; background-color: none; color: #000000; }
+    a:hover   { text-decoration: none; font-weight: normal; background-color: none; color: #000000; }
+    a:active  { text-decoration: underline; font-weight:normal; background-color: none; color: #000000; }
+</style>
+<form method="post" name="adviserlist">
+<table width="750">
+    <tr>
+        <th width="10">ID No.</th>
+        <th width="60">Name</th>
+        <th width="30">Username</th>
+        <th width="30">Department</th>
+        <th width="20"></th>
+        <th width="20"></th>
+        <th width="20"></th>
+    </tr>
+    {% for adviser in advisers %}
+    <tr onmouseover="this.bgColor='#D2F9D8'" onmouseout="this.bgColor='#FFFFFF'">
+        <td width="60">{{ adviser.id }}</td>
+        <td width="60">{{ adviser.lname }} {{ adviser.fname }} {{ adviser.mname|slice:":1"|upper }}.</td>
+        <td width="30">{{ adviser.uname }}</td>
+        <td width="30">{{ adviser.department }}</td>
+        <td width="20"><a href="{% url 'resetpass' adviser.id adviser.department %}" onclick="return confirm('Are you sure you want to reset the password?')">Reset Password</a></td>
+        <td width="20"><a href="{% url 'changepassfaculty' adviser.id adviser.department %}">Change Username & Password</a></td>
+    </tr>
+    {% endfor %}
+</table>
+</form>
+{% endblock %}

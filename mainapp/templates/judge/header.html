@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>ISU STATS</title>
+    <style type="text/css">
+        a:link {
+            text-decoration: none;
+            font-weight: normal;
+            background-color: none;
+            color: blue;
+        }
+        a:visited {
+            text-decoration: none;
+            font-weight: bold;
+            background-color: none;
+            color: #000000;
+        }
+        a:hover {
+            text-decoration: none;
+            font-weight: bold;
+            background-color: none;
+            color: #000000;
+        }
+        a:active {
+            text-decoration: underline;
+            font-weight: normal;
+            background-color: none;
+            color: #000000;
+        }
+    </style>
+</head>
+<body>
+<div id="headerbox">
+    <div id="headerboxlogo"><img src="{% static 'judge/images/leftlogo.png' %}"/></div>
+    <div id="headerboxpc"><img src="{% static 'judge/images/rightlogo.png' %}"/></div>
+    <div id="headerboxname">
+        SAN FERMIN CAUAYAN CITY
+        <div id="headersub"></div>
+        <div id="headerstat">(TABS) TECHNICAL ACTIVITY BOARD SYSTEM</div>
+    </div>
+    <div id="headerlogname">
+        <p>Welcome &nbsp; {{ vjname }} &nbsp;<br/> {{ rowjudge.evdes }} &nbsp; Event</p>
+        <a href="{% url 'index' %}"><p style="font-family: Arial; font-size:12px; font-family: sans-serif; color: #ffffff; font-style:normal; font-weight: bold;">Log-Out</p></a>
+    </div>
+</div>
+</body>
+</html>

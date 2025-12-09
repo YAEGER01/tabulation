@@ -1,0 +1,222 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'admin/cssdesign/design.css' %}"/>
+<center>
+<table style="border:0px; width:60%">
+<tr>
+<td style="border:0px; width:75%"><b>List of Criteria</b></td>
+<td style="border:0px; width: 25%;">
+    <a href="#" id="itemadd"><img src="{% static 'icon/note-add-icon.png' %}" alt="" style="width: 30px; height: 30px;"/><b>New</b></a>
+    <a href="#" onclick="window.location.reload();"><img src="{% static 'icon/refresh.png' %}" alt="" style="width: 30px; height: 30px;"/><b>Refresh</b></a>
+</td>
+</tr>
+</table>
+
+
+{% for group in event_criteria %}
+<table width="75%" style="border: 2px solid #008000; border-collapse: collapse; margin-bottom: 20px;">
+    <tr>
+        <td colspan="7" style="font-size: 16px; font-weight: bold; text-align: center; border: 1px solid #008000; background: #fff;">{{ group.event.evdes }}</td>
+    </tr>
+    <tr>
+        <th style="width:5%; border: 1px solid #008000;">No.</th>
+        <th style="width:5%; border: 1px solid #008000;">Status</th>
+        <th style="width:15%; border: 1px solid #008000;">Judges Page</th>
+        <th style="width:30%; border: 1px solid #008000;">Title</th>
+        <th style="width:10%; border: 1px solid #008000;">Percentage</th>
+        <th style="width:20%; border: 1px solid #008000;">Event</th>
+        <th style="width:15%; border: 1px solid #008000;"></th>
+    </tr>
+    {% for cri in group.criteria %}
+    <tr style="border: 1px solid #008000;">
+        <td style="border: 1px solid #008000; text-align: center;">{{ forloop.counter }}</td>
+    <td style="border: 1px solid #008000; text-align: center;"><input type="checkbox" class="toggle-status" data-scri="{{ cri.scri }}" data-event="{{ group.event.pk }}" {% if cri.status == '1' %}checked{% endif %}></td>
+    <td style="border: 1px solid #008000; text-align: center;"><input type="checkbox" class="toggle-category" data-scri="{{ cri.scri }}" data-event="{{ group.event.pk }}" {% if cri.category == '1' %}checked{% endif %}></td>
+        <td style="border: 1px solid #008000;">{{ cri.ctitle }}</td>
+        <td style="border: 1px solid #008000; text-align: center;">{{ cri.cper }}%</td>
+        <td style="border: 1px solid #008000;">{{ group.event.evdes }}</td>
+        <td style="border: 1px solid #008000; text-align: center;">
+                <a href="#" class="edit-criteria"
+                    data-id="{{ cri.scri }}"
+                    data-ctitle="{{ cri.ctitle|escapejs }}"
+                    data-cper="{{ cri.cper }}"
+                    data-event="{{ group.event.id }}"
+                    data-status="{{ cri.status|default_if_none:'0' }}"
+                    data-category="{{ cri.category|default_if_none:'0' }}"
+                    data-minrate="{{ cri.minrate|default_if_none:'' }}"
+                ><img src="{% static 'icon/mail_new.png' %}" alt="Edit" style="width: 30px; height: 30px;" title="Edit"/></a>
+            <a href="#" onclick="deletecriteria('{{ cri.scri }}');"><img src="{% static 'icon/Delete-icon.png' %}" alt="Delete" style="width: 30px; height: 30px;" title="Delete"/></a>
+        </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="7" style="text-align:center; border: 1px solid #008000;">No criteria for this event.</td></tr>
+    {% endfor %}
+</table>
+{% endfor %}
+
+<!-- Modal for New Criteria -->
+<div id="formitem" title="Add Criteria" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; margin:auto; width:400px; height:340px; z-index:1000; background:#fff; border-radius:14px; box-shadow:0 8px 32px #888; padding:32px 32px 24px 32px;">
+    <p class="tipsfields" style="font-size: 15px; text-align:center; margin-bottom:18px;">All form fields are required.</p>
+    <form name="savecriteria" id="savecriteria" method="post" action="{% url 'editcriteria' %}" style="margin:0;">
+        {% csrf_token %}
+        <input type="hidden" name="scri_id" id="scri_id" value="" />
+        <fieldset style="border:none; padding:0; margin:0;">
+            <label for="optevent" style="font-size: 15px; font-weight:600;">Event</label><br/>
+            <select id="optevent" name="optevent" style="font-size: 15px; width: 100%; height: 36px; margin-bottom:12px; border-radius:6px; border:1px solid #ccc; padding:4px;" required>
+                <option value="">Select</option>
+                {% for evid, evdes in event_dropdown %}
+                    <option value="{{ evid }}">{{ evdes }}</option>
+                {% endfor %}
+            </select>
+            <label for="ctitle" style="font-size: 15px; font-weight:600;">Title Criteria</label><br/>
+            <input type="text" name="ctitle" id="ctitle" style="font-size: 15px; width: 100%; margin-bottom:12px; border-radius:6px; border:1px solid #ccc; padding:4px;" maxlength="50" required/>
+            <label for="cper" style="font-size: 15px; font-weight:600;">Percentage</label><br/>
+            <input type="number" name="cper" id="cper" style="font-size: 15px; width: 100%; margin-bottom:12px; border-radius:6px; border:1px solid #ccc; padding:4px;" min="1" max="100" required/>
+            <label for="minrate" style="font-size: 15px; font-weight:600; display:block;">Minimum Rating Range</label>
+            <input type="text" name="minrate" id="minrate" style="font-size: 15px; width: 100%; margin-bottom:12px; border-radius:6px; border:1px solid #ccc; padding:4px;" maxlength="4" />
+            <div style="display:flex; gap:12px; align-items:center; margin-bottom:12px;">
+                <label style="font-size:14px; font-weight:600; margin:0;">Status</label>
+                <input type="checkbox" id="status" name="status" value="1" />
+                <label style="font-size:14px; font-weight:600; margin:0 0 0 18px;">Judges Page</label>
+                <input type="checkbox" id="category" name="category" value="1" />
+            </div>
+            <div style="text-align:center;">
+                <button type="submit" class="CSSButton" id="saveBtn" style="width: 110px; font-size: 15px; margin-right: 10px;">Save</button>
+                <button type="button" class="CSSButton" style="width: 110px; font-size: 15px;" onclick="$('#formitem').hide();">Cancel</button>
+            </div>
+        </fieldset>
+    </form>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(function() {
+    
+    $('#itemadd').click(function(e) {
+        e.preventDefault();
+        $('#savecriteria')[0].reset();
+        $('#scri_id').val('');
+        $('#formitem').attr('title', 'Add Record');
+        $('#saveBtn').text('Save');
+        // ensure status/category are unchecked for new records
+        $('#status').prop('checked', false);
+        $('#category').prop('checked', false);
+        $('#formitem').show();
+    });
+    // Edit button
+    $('.edit-criteria').click(function(e) {
+        e.preventDefault();
+        var scri = $(this).data('id');
+        var ctitle = $(this).data('ctitle');
+        var cper = $(this).data('cper');
+        var eventid = $(this).data('event');
+        var status = $(this).data('status');
+        var category = $(this).data('category');
+        var minrate = $(this).data('minrate');
+        $('#savecriteria')[0].reset();
+    $('#scri_id').val(scri);
+    $('#ctitle').val(ctitle);
+    $('#cper').val(cper);
+    $('#optevent').val(eventid);
+    $('#minrate').val(minrate || '');
+    // populate status and category checkboxes
+    $('#status').prop('checked', status === '1');
+    $('#category').prop('checked', category === '1');
+        $('#formitem').attr('title', 'Edit Record');
+        $('#saveBtn').text('Update');
+        $('#formitem').show();
+    });
+    // Inline toggle handlers for Status and Judges Page (category)
+    // CSRF helper for Django
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+
+    function handleToggleChange(selector, fieldName) {
+        $(document).on('change', selector, function() {
+            var $chk = $(this);
+            var scri = $chk.data('scri');
+            var val = $chk.is(':checked') ? '1' : '0';
+            var data = { scri: scri };
+            if (fieldName === 'status') data.status = val;
+            else if (fieldName === 'category') data.category = val;
+
+            // Optimistic UI: keep checked state until fail
+            $.ajax({
+                url: "{% url 'toggle_criteria_status' %}",
+                method: 'POST',
+                data: data,
+                headers: { 'X-CSRFToken': csrftoken },
+            })
+            .done(function(resp) {
+                console.log('toggle response', resp);
+                if (!resp || !resp.ok) {
+                    alert('Failed to update ' + fieldName);
+                    $chk.prop('checked', !$chk.is(':checked'));
+                } else {
+                    // notify other tabs (candidate toggles use same pattern)
+                    var ev = $chk.data('event') || null;
+                    var payload = JSON.stringify({ type: 'criteria', scri: resp.scri, event: ev });
+                    try {
+                        localStorage.setItem('criteria-changed', payload);
+                        localStorage.removeItem('criteria-changed');
+                    } catch (e) { console.warn('localStorage write failed', e); }
+                    try {
+                        if (typeof BroadcastChannel !== 'undefined') {
+                            var bc = new BroadcastChannel('criteria_updates');
+                            bc.postMessage({ type: 'criteria', scri: resp.scri, event: ev });
+                        }
+                    } catch (e) { console.warn('BroadcastChannel unavailable', e); }
+                }
+            })
+            .fail(function(xhr) {
+                alert('Failed to update ' + fieldName + ' (server error)');
+                $chk.prop('checked', !$chk.is(':checked'));
+            });
+        });
+    }
+    handleToggleChange('.toggle-status', 'status');
+    handleToggleChange('.toggle-category', 'category');
+   
+    window.deletecriteria = function(scri_id) {
+        if (!confirm('Are you sure you want to delete this criteria?')) return false;
+        var url = "{% url 'deleterecord' %}";
+        console.log('Deleting criteria', scri_id, 'POST', url);
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: { mycontrol: 'criteria', myeveid: scri_id },
+            headers: { 'X-CSRFToken': csrftoken },
+        })
+        .done(function(resp, statusText, xhr) {
+            console.log('Delete response:', resp);
+            if (resp && resp.status === 'ok') {
+                location.reload();
+            } else {
+                alert('Failed to delete criteria');
+            }
+        })
+        .fail(function(xhr, status, err) {
+            console.error('Server error while deleting criteria', status, err, xhr.responseText);
+            alert('Server error while deleting criteria');
+        });
+        return false;
+    };
+});
+</script>
+</center>
+</center>
+{% endblock %}

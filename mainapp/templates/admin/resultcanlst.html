@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'admin/cssdesign/design.css' %}"/>
+<style>
+.CSSTableGenerator { margin:0px auto;padding:0px;width:80%;box-shadow: 4px 4px 6px #888888;border:2px solid #4CAF50; border-radius:6px; }
+.CSSTableGenerator table{ border-collapse: collapse; width:100%; height:100%; margin:0px;padding:0px; }
+.CSSTableGenerator tr:nth-child(odd){ background-color:#f6fff6; }
+.CSSTableGenerator tr:nth-child(even){ background-color:#ffffff; }
+.CSSTableGenerator th, .CSSTableGenerator td{ vertical-align:middle; border:1px solid #4CAF50; text-align:center; padding:10px; font-size:16px; font-family:Arial; font-weight:600; color:#000000; }
+.CSSTableGenerator tr:first-child td{ background: #4CAF50; color: white; font-weight:700; }
+.blinkwin { background-color: #fff8dc; }
+</style>
+<center>
+{% for event in events %}
+<p style="font-family: serif,arial; font-size:x-large; font-weight: bold; color: red;" align="center">{{ event.evdes }}</p>
+<table width="75%">
+    <tr>
+        <th style="width:5%">No.</th>
+        <th style="width:40%">Title</th>
+        <th style="width:10%">Percentage</th>
+        <th style="width:20%">Event</th>
+        <th style="width:20%"></th>
+    </tr>
+    {% for cri in event.criteria %}
+    <tr onmouseover="this.bgColor='#aaFFaa'" onmouseout="this.bgColor='#ffffff'">
+        <td style="width:5%">{{ forloop.counter }}</td>
+        <td style="width:50%">{{ cri.ctitle }}</td>
+        <td style="width:10%" align="center">{{ cri.cper }}%</td>
+        <td style="width:10%">{{ cri.evdes }}</td>
+        <td style="width:10%">
+            <a href="#" class="editrecord-btn" data-scri="{{ cri.scri }}" data-ctitle="{{ cri.ctitle|escapejs }}" data-cper="{{ cri.cper }}">
+                <img src="{% static 'admin/icon/mail_new.png' %}" alt="" style="width: 30px; height: 30px;" title="Edit"/>Result
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endfor %}
+</center>
+<script type="text/javascript">
+document.querySelectorAll('.editrecord-btn').forEach(function(btn) {
+    btn.onclick = function() {
+        var scri = btn.getAttribute('data-scri');
+        var ctitle = btn.getAttribute('data-ctitle');
+        var cper = btn.getAttribute('data-cper');
+        var url = '/admin/resultcandidates/?mycontrol=criedit&myeveid=' + encodeURIComponent(scri) + '&mydes=' + encodeURIComponent(ctitle) + '&myper=' + encodeURIComponent(cper);
+        window.open(url, null, 'dialogwidth: 800; dialogheight: 700; resizable: yes;center : yes;');
+        window.location.reload();
+    };
+});
+</script>
+{% endblock %}

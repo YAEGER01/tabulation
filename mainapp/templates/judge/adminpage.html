@@ -1,0 +1,370 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_head %}
+    <link rel="icon" type="image/ico" href="{% static 'images/tablogo.png' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+{% endblock %}
+
+{% block content %}
+<nav class="navbar navbar-default navbar-static" role="navigation" style="border-radius: 0px; opacity:0.8;">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a href="/" class="navbar-brand" style="font-weight:normal; font-size:16px; font-weight:bold; margin-top:-6px; display:inline;">
+                <div>
+                    <img src="{% static 'images/tablogo.png' %}" style="height:30px; width:30px; position:relative; margin-top:-1px;">
+                    &nbsp;Technical Activity Board System v1.5.1
+                </div>
+            </a>
+        </div>
+        <div class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+            <ul class="nav navbar-nav navbar-right">
+                <li class="nav-time">
+                    <a role="button" class="dropdown-toggle" data-toggle="dropdown">
+                        <span class="glyphicon glyphicon-time"></span> Today is: <span id="date">{{ now|date:"l, F d, Y" }}</span> <span id="time"></span>
+                    </a>
+                </li>
+                <li class="navbar-text welcome-text" style="margin-left:0;right:53%;">
+                    Welcome&nbsp;<strong>{{ vjname|default:'' }}</strong>
+                </li>
+                <li class="nav-logout" style="margin-left:0;">
+                    <a href="{% url 'accounts_logout' %}" style="right:350%;color:#000; text-decoration:underline; font-family: Arial; font-size:12px; font-weight:bold;">Log-Out</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<style type="text/css">
+
+.navbar { z-index: 200; background-color: rgba(240,240,240,0.78); border-bottom: 1px solid rgba(0,0,0,0.12); height: 150px; min-height:48px; padding: 0 8px; }
+.navbar .navbar-brand { padding: 8px 15px; }
+.navbar .navbar-brand img { height:28px; width:28px; margin-top:0; display:inline-block; vertical-align:middle; }
+body { background-color: #000; background-image: url('{% static "judge/images/bg.png" %}'); background-repeat: no-repeat; background-position: left 30px; background-size: 44% auto; color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+.navbar { z-index: 200; }
+.left-hero { position:absolute; left:4%; top:6%; width:46%; max-width:960px; color:#fff; z-index:30; }
+.left-hero .logo { width:140px; height:140px; background: url('{% static "images/tablogo.png" %}') center/contain no-repeat; box-shadow: 0 10px 20px rgba(0,0,0,0.45); margin-bottom:8px; border-radius:8px; background-color:rgba(255,255,255,0.02); padding:10px; }
+
+.left-hero h1, .left-hero p.lead { display: none; }
+.navbar { z-index: 200; }
+.navbar-default .navbar-nav > li > a, .navbar-default .navbar-brand, .navbar-default .navbar-text { color: #000000; }
+.panel-judge { position: absolute; right: 6%; top: 8%; width: 34%; max-width: 720px; min-width: 320px; opacity:0.99; background: #fff; border-radius:10px; box-shadow: 0 26px 64px rgba(0,0,0,0.7); padding:0; overflow:hidden; }
+.panel-judge .panel-heading p { display:none; }
+.panel-judge .panel-body { padding: 18px 22px; }
+.panel-judge table.table { margin-bottom:0; border-collapse: separate; }
+.panel-judge table.table th, .panel-judge table.table td { font-size:20px; padding:12px 8px; vertical-align:middle; }
+.panel-judge table.table th { text-align:center; background:transparent; border-bottom:none; font-weight:800; }
+.panel-judge table.table td { text-align:center; }
+.panel-judge table.table td:first-child, .panel-judge table.table th:first-child { text-align:left; padding-left:18px; font-family: Georgia, 'Times New Roman', serif; font-weight:700; }
+.panel-judge table.table td input.form-control { font-family: Georgia, 'Times New Roman', serif; font-size:22px; font-weight:700; text-align:center; border:1px solid rgba(0,0,0,0.08); border-radius:6px; padding:6px 8px; background: #fafafa; min-width:64px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.6); }
+.panel-judge .panel-footer { height:64px; display:flex; align-items:center; justify-content:flex-end; gap:12px; padding:10px 18px; background:#efefef; border-radius:0 0 10px 10px; }
+.panel-judge .btn { font-size:16px; padding:8px 14px; border-radius:6px; }
+.panel-judge .btn-primary { background-color:#c62828; border-color:#a61a1a; box-shadow: 0 6px 18px rgba(198,40,40,0.18); }
+.panel-judge .btn-default { background:#fff; border:1px solid #ddd; color:#333; }
+
+
+
+@media (max-width: 1000px) {
+    .panel-judge { position: relative; right: auto; top: auto; width: 92%; margin: 18px auto; }
+    .left-hero { display:none; }
+}
+
+
+.panel-container { position: absolute; top: 64px; right: 72px; width: 520px; z-index:120; }
+.panel-container .panel-judge { width: 520px; margin: 0; }
+
+
+.panel-judge { background: rgba(255,255,255,0.95); border-radius:6px; overflow:hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.45); }
+.panel-judge .panel-heading { background: rgba(255,255,255,0.98); padding:12px 16px; border-bottom:1px solid rgba(0,0,0,0.06); }
+.panel-judge .event-title { color:#b71c1c; font-family: Georgia, 'Times New Roman', serif; font-size:28px; font-weight:700; margin:0; text-align:center; }
+.panel-judge .panel-body { background: rgba(255,255,255,0.96); padding:6px 8px 0 8px; min-height:220px; }
+.panel-judge .panel-footer { background: rgba(255,255,255,0.96); border-top:1px solid rgba(0,0,0,0.06); padding:10px 12px; display:flex; align-items:center; justify-content:space-between; }
+
+
+.panel-judge, .panel-judge * {
+    color: #222 !important;
+}
+.panel-judge table.table th, .panel-judge table.table td { color: #222 !important; }
+.panel-judge input.form-control { color: #222 !important; }
+
+
+.panel-judge table.table { width:100%; margin-bottom:0; border-collapse:collapse; }
+.panel-judge table.table th, .panel-judge table.table td { padding:14px 12px; border-bottom:1px solid #e6e6e6; }
+.panel-judge table.table th { font-size:18px; font-weight:700; }
+.panel-judge table.table td { font-size:18px; }
+.panel-judge table.table td.name-col { text-align:left; font-family: Georgia, 'Times New Roman', serif; font-weight:700; }
+.panel-judge table.table td.score-col { text-align:right; font-weight:700; }
+.panel-judge table.table td input.form-control { text-align:center; width:76px; margin:0 auto; }
+
+
+.panel-judge table.table { table-layout: fixed; }
+.panel-judge table.table th.col-no, .panel-judge table.table td.col-no { width:6%; text-align:center; vertical-align:middle; }
+.panel-judge table.table th.col-name, .panel-judge table.table td.col-name { width:46%; text-align:center; vertical-align:middle; }
+
+.panel-judge table.table th.col-score { text-align:center; vertical-align:middle; }
+.panel-judge table.table td.score-col { text-align:center; vertical-align:middle; }
+.panel-judge table.table th.col-total, .panel-judge table.table td.col-total { width:12%; text-align:center; }
+.panel-judge table.table td.name-col { text-align:center; vertical-align:middle; }
+.panel-judge table.table td.score-col { text-align:center; vertical-align:middle; }
+
+
+.left-hero { z-index:30; }
+
+
+.event-title { text-align:center; color:#b71c1c; font-family: Georgia, 'Times New Roman', serif; font-size:30px; margin:0; padding:18px 0; }
+.panel-judge .panel-body { min-height:160px; }
+.panel-judge .footer-actions { display:flex; gap:10px; align-items:center; }
+.panel-judge .footer-actions .btn { min-width:100px; }
+
+.nav-header-right { position: absolute; right: 300px; top: 6px; text-align: right; z-index: 210; }
+.nav-header-right .nav-brand-title { font-family: Georgia, 'Times New Roman', serif; color: #ffffff; font-size: 18px; margin: 0; font-weight: 700; }
+.nav-header-right .nav-brand-title .nav-brand-small { font-size: 11px; font-weight: 400; display: block; color: #f0d9a6; }
+.nav-header-right .nav-brand-lead { margin: 0; font-size: 11px; color: #e6e6e6; }
+.navbar .navbar-nav.navbar-right { position: absolute; right: 150px; top: 12px; z-index: 220; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.navbar .navbar-nav.navbar-right > li { display: block; }
+.navbar .navbar-nav.navbar-right .nav-time a,
+.navbar .navbar-nav.navbar-right .nav-logout a,
+.navbar .navbar-nav.navbar-right .welcome-text { color: #000; display: block; padding: 4px 8px; }
+.navbar .navbar-nav.navbar-right .nav-time a { line-height: 1; font-size:13px; }
+.navbar .navbar-nav.navbar-right .welcome-text { font-size:13px; font-weight:700; }
+.navbar .navbar-nav.navbar-right .nav-logout a { font-size:13px; font-weight:700; }
+
+.navbar .navbar-nav.navbar-right { align-items: flex-end; }
+.navbar .navbar-nav.navbar-right > li { text-align: right; }
+.navbar .navbar-nav.navbar-right a { text-align: right; display: block; }
+.navbar .navbar-nav.navbar-right .welcome-text { text-align: right; display: block; }
+@media (max-width: 900px) { .nav-header-right { display:none; } }
+</style>
+
+
+
+<div class="left-hero" aria-hidden="true">
+   
+    <h1>Tabulator<br/><small style="font-size:0.5em; font-weight:400;">MS San Fermin</small></h1>
+    <p class="lead">Technical Activity Board System — judge scoring interface</p>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="panel-container">
+            <div class="panel panel-default panel-judge">
+                <div class="panel-heading">
+                    <h2 class="event-title">{{ evdes|default:'' }}</h2>
+                </div>
+                <div class="panel-body">
+
+                    {% for table in category_tables %}
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="col-no">No.</th>
+                                    <th class="col-name">Name</th>
+                                    {% for cri in table.cri_headers %}
+                                        <th class="col-score" style="text-align:center;">{{ cri.ctitle }}<br/> {{ cri.cper }}%</th>
+                                    {% endfor %}
+                                    <th class="col-total" style="text-align:center;">Total <br/> {{ table.totcri }}%</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for candidate in table.candidates %}
+                                                <tr>
+                                                    <td style="width:1%;">{{ candidate.cano }}</td>
+                                                    <td class="name-col" style="width:10%;">{{ candidate.cname }}</td>
+                                                    {% for score in candidate.scores %}
+                                                        {% if score.readonly %}
+                                                            <td class="score-col" style="width:5%;">{{ score.inscore }}</td>
+                                                        {% else %}
+                                                            <td class="score-col" style="width:5%;padding:0;">
+                                                                <input type="number" class="form-control" id="input{{ candidate.sconid }}{{ score.crid }}" name="input{{ candidate.sconid }}{{ score.crid }}" step="0.01" min="{{ score.crimin|default:'0' }}" max="{{ score.criper }}" value="{{ score.inscore }}" onkeydown="return checkArrows(this,event)" onfocus="onfocusscore(this)" onkeypress="return checkIt(this,event);" onchange="savescore(this,'{{ candidate.sconid }}{{ score.crid }}','{{ candidate.sconid }}','{{ score.crid }}','{{ getevid }}','{{ getses }}','{{ score.criper }}','{{ score.crimin }}')" title="Enter a value between {{ score.crimin|default:'0' }} and {{ score.criper }}" />
+                                                            </td>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    <td class="score-col" style="width:1%;">{{ candidate.total }}</td>
+                                                </tr>
+                                            {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endfor %}
+
+                </div>
+                <div class="panel-footer" style="height:88px; background:#eee;">
+                        <div style="display:flex; align-items:center; width:100%;">
+                            <div style="flex:0 0 auto;">
+                                <button class="btn btn-default" style="font-size:20px; padding:8px 14px;" onclick="location.reload();">Refresh</button>
+                            </div>
+                            <div style="flex:1 1 auto; text-align:right;">
+                                {% if show_submit %}
+                                    <button class="btn btn-primary" style="font-size:20px; padding:8px 14px;" onclick="subscore();">Submit</button>
+                                {% endif %}
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if auto_refresh %}
+    <meta http-equiv="refresh" content="5">
+{% endif %}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+<script>
+
+$(function(){
+    function positionPanel(){
+        var $navbar = $('.navbar').first();
+        var navBottom = $navbar.length ? ($navbar.offset().top + $navbar.outerHeight()) : 0;
+        var rightMargin = 72; 
+        var panelWidth = 520;
+        var viewportWidth = $(window).width();
+        
+        var top = navBottom + 4;
+        
+        var right = rightMargin;
+    $('.panel-container').css({ top: top + 'px', right: right + 'px', width: panelWidth + 'px' });
+    
+    $('.left-hero').css({ top: (navBottom + 8) + 'px' });
+        $('.panel-container .panel-judge').css({ width: panelWidth + 'px' });
+    }
+    positionPanel();
+    $(window).on('resize', positionPanel);
+});
+
+
+window.addEventListener('storage', function(e) {
+    if (e.key === 'candidate-status-changed' && e.newValue) {
+        try {
+            var payload = JSON.parse(e.newValue);
+            var changedEvent = payload.event;
+            var myEvent = '{{ getevid }}';
+            if (String(changedEvent) === String(myEvent)) {
+               
+                location.reload();
+            }
+        } catch(err) { console.warn('failed to parse candidate-status-changed', err); }
+    }
+   
+    if (e.key === 'criteria-changed' && e.newValue) {
+        try {
+            var payload = JSON.parse(e.newValue);
+            var changedEvent = payload.event;
+            var myEvent = '{{ getevid }}';
+            if (String(changedEvent) === String(myEvent)) {
+                console.log('criteria changed for this event, reloading');
+                location.reload();
+            }
+        } catch(err) { console.warn('failed to parse criteria-changed', err); }
+    }
+});
+
+
+(function(){
+    var lastCount = null;
+    var ev = '{{ getevid }}';
+    if (!ev) return;
+    function checkCount(){
+        $.get("{% url 'candidate_count' %}", { evid: ev })
+            .done(function(resp){
+                if (resp && resp.ok){
+                    if (lastCount === null) lastCount = resp.count;
+                    else if (resp.count != lastCount){
+                        
+                        location.reload();
+                    }
+                }
+            });
+    }
+    setInterval(checkCount, 5000);
+    
+    window.__checkCandidateCount = checkCount;
+})();
+
+
+try {
+    if (typeof BroadcastChannel !== 'undefined') {
+        var bc = new BroadcastChannel('candidate_updates');
+        bc.onmessage = function(evt){
+            try{
+                var payload = evt.data;
+                if (payload && payload.event && String(payload.event) === String('{{ getevid }}')){
+                    console.log('BroadcastChannel received candidate update for this event, triggering check');
+                    if (window.__checkCandidateCount) window.__checkCandidateCount();
+                }
+            } catch(e) { console.warn('bc message error', e); }
+        };
+        
+        var bc2 = new BroadcastChannel('criteria_updates');
+        bc2.onmessage = function(evt){
+            try{
+                var payload = evt.data;
+                if (payload && payload.event && String(payload.event) === String('{{ getevid }}')){
+                    console.log('BroadcastChannel received criteria update for this event, reloading');
+                    location.reload();
+                }
+            } catch(e) { console.warn('bc2 message error', e); }
+        };
+    }
+} catch(e) { console.warn('BroadcastChannel not available or failed', e); }
+
+function savescore(inputscore,namebox,canid,crid,evid,jid,criper,cripermin) {
+    var raw = (inputscore.value === undefined ? '' : String(inputscore.value)).trim();
+    var parsed = parseFloat(raw);
+    if (raw === '' || isNaN(parsed)) {
+        alert('Please input a valid numeric score.');
+        inputscore.focus();
+        return;
+    }
+
+    
+    var max = (criper === undefined || criper === null || criper === '') ? null : parseFloat(criper);
+    var min = (cripermin === undefined || cripermin === null || cripermin === '') ? 0 : parseFloat(cripermin);
+    if (isNaN(min)) min = 0;
+    if (max !== null && isNaN(max)) max = null;
+
+    if (max !== null && parsed > max) {
+        alert('Inputted score must not be greater than ' + max + '.');
+        inputscore.focus();
+        return;
+    }
+    if (parsed < min) {
+        alert('Inputted score must not be less than ' + min + '.');
+        inputscore.focus();
+        inputscore.value = min;
+        return;
+    }
+
+    
+    $.get("{% url 'saverecord' %}", { myctrl: 'inputscore', myinscore: parsed, mycanid: canid, mycrid: crid, myevid: evid, myjid: jid });
+}
+function subscore() { var vjid='{{ getses }}'; var vevid='{{ getevid }}'; $.get("{% url 'saverecord' %}", { myctrl: 'submitscore', myjid: vjid, myevid: vevid }, function(){ location.reload(true); }); }
+function onfocusscore(inputscore) { inputscore.focus(); inputscore.select(); }
+function checkIt(el,e) { var key = e.which || e.keyCode; if (key === 8 || key === 13 || key === 37 || key === 39 || key === 46) return true; var val = el.value + String.fromCharCode(key); var ex = /^[0-9]*\.?[0-9]*$/; return ex.test(val); }
+$(document).ready(function(){ $('input').keyup(function(e){ if(e.which==13 || e.which==40) $(this).closest('tr').next().find('td:eq('+$(this).closest('td').index()+')').find('input').focus(); else if(e.which==38) $(this).closest('tr').prev().find('td:eq('+$(this).closest('td').index()+')').find('input').focus(); }); });
+</script>
+
+<script type="text/javascript">
+
+function updateAdminHeaderTime(){
+    try{
+        var now = new Date();
+        var hh = now.getHours(); var mm = now.getMinutes(); var ss = now.getSeconds();
+        if(mm<10) mm = '0'+mm; if(ss<10) ss='0'+ss;
+        var timeStr = (hh<10? '0'+hh:hh)+':'+mm+':'+ss;
+        var timeSpan = document.getElementById('time');
+        if(timeSpan) timeSpan.textContent = ' ' + timeStr;
+        var dateSpan = document.getElementById('date');
+        if(dateSpan){
+            var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+            var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+            var dateStr = days[now.getDay()] + ', ' + months[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear();
+            dateSpan.textContent = dateStr;
+        }
+    }catch(e){ console.warn('admin time update failed', e); }
+}
+updateAdminHeaderTime();
+setInterval(updateAdminHeaderTime, 1000);
+</script>
+
+{% endblock %}

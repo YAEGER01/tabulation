@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Judge Candidate List</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'judge/cssdesign/design.css' %}"/>
+</head>
+<body style="background-color:#FFFFFF;">
+<center>
+    <table style="border:0px; width:75%">
+        <tr>
+            <td style="border:0px; width:75%"><b>List of Aspirant</b></td>
+            <td style="border:0px; width: 25%;">
+                <a href="#" id="itemadd"><img src="{% static 'admin/icon/note-add-icon.png' %}" alt="" style="width: 30px; height: 30px;"/><b>New</b></a>
+                <a href="#" onclick="window.location.reload();"><img src="{% static 'admin/icon/refresh.png' %}" alt="" style="width: 30px; height: 30px;"/><b>Refresh</b></a>
+            </td>
+        </tr>
+    </table>
+    <label style="font-size: 14px; font-weight: bold;">{{ event.evdes }}</label>
+    <table width='75%'>
+        <tr>
+            <th style=" width:10%">No.</th>
+            <th style=" width:10%">Status</th>
+            <th style=" width:10%">Name</th>
+            <th style=" width:10%">Course</th>
+        </tr>
+        {% for candidate in candidates %}
+        <tr onmouseover="this.bgColor='#aaFFaa'" onmouseout="this.bgColor='#ffffff'">
+            <td style=" width:10%">{{ candidate.cano }}</td>
+            <td>
+                <input type="checkbox" size="2" id="chk_{{ candidate.id }}" onclick="statcheck(this,'{{ candidate.id }}');" name="chk_{{ candidate.id }}" value="{{ candidate.canstatus }}" {% if getjid != candidate.ejid %}checked{% endif %}>
+            </td>
+            <td style=" width:30%">{{ candidate.cname }}</td>
+            <td style=" width:30%">{{ candidate.course }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <br/>
+</center>
+<script>
+function statcheck(vchek, vcanid) {
+    var vscheck = vchek.checked;
+    var vjid = '{{ getjid }}';
+    var ctrl = "judgestatuscan";
+    var varstat;
+    if (vscheck) {
+        varstat = 0;
+    } else {
+        varstat = vjid;
+    }
+    fetch("{% url 'judgecanlst_status' %}?mycanid=" + vcanid + "&mystatus=" + varstat)
+        .then(response => response.json())
+        .then(data => window.location.reload());
+}
+</script>
+</body>
+</html>
