@@ -27,8 +27,8 @@ USE `tabulatormsanfermin`;
 DROP TABLE IF EXISTS `approval`;
 
 CREATE TABLE `approval` (
-    `id` bigint(20) NOT NULL AUTO_INCREMENT,
-    `approved` tinyint(1) NOT NULL,
+    `id` bigint (20) NOT NULL AUTO_INCREMENT,
+    `approved` tinyint (1) NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
@@ -52,7 +52,7 @@ CREATE TABLE `auth_group` (
 DROP TABLE IF EXISTS `auth_group_permissions`;
 
 CREATE TABLE `auth_group_permissions` (
-    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `id` bigint (20) NOT NULL AUTO_INCREMENT,
     `group_id` int(11) NOT NULL,
     `permission_id` int(11) NOT NULL,
     PRIMARY KEY (`id`),
@@ -888,13 +888,13 @@ CREATE TABLE `auth_user` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `password` varchar(128) NOT NULL,
     `last_login` datetime(6) DEFAULT NULL,
-    `is_superuser` tinyint(1) NOT NULL,
+    `is_superuser` tinyint (1) NOT NULL,
     `username` varchar(150) NOT NULL,
     `first_name` varchar(150) NOT NULL,
     `last_name` varchar(150) NOT NULL,
     `email` varchar(254) NOT NULL,
-    `is_staff` tinyint(1) NOT NULL,
-    `is_active` tinyint(1) NOT NULL,
+    `is_staff` tinyint (1) NOT NULL,
+    `is_active` tinyint (1) NOT NULL,
     `date_joined` datetime(6) NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `username` (`username`)
@@ -907,7 +907,7 @@ CREATE TABLE `auth_user` (
 DROP TABLE IF EXISTS `auth_user_groups`;
 
 CREATE TABLE `auth_user_groups` (
-    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `id` bigint (20) NOT NULL AUTO_INCREMENT,
     `user_id` int(11) NOT NULL,
     `group_id` int(11) NOT NULL,
     PRIMARY KEY (`id`),
@@ -924,7 +924,7 @@ CREATE TABLE `auth_user_groups` (
 DROP TABLE IF EXISTS `auth_user_user_permissions`;
 
 CREATE TABLE `auth_user_user_permissions` (
-    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `id` bigint (20) NOT NULL AUTO_INCREMENT,
     `user_id` int(11) NOT NULL,
     `permission_id` int(11) NOT NULL,
     PRIMARY KEY (`id`),
@@ -941,7 +941,7 @@ CREATE TABLE `auth_user_user_permissions` (
 DROP TABLE IF EXISTS `candidate`;
 
 CREATE TABLE `candidate` (
-    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `id` bigint (20) NOT NULL AUTO_INCREMENT,
     `cano` int(11) DEFAULT NULL,
     `cname` varchar(100) NOT NULL,
     PRIMARY KEY (`id`)
@@ -954,7 +954,7 @@ CREATE TABLE `candidate` (
 DROP TABLE IF EXISTS `criteria`;
 
 CREATE TABLE `criteria` (
-    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `id` bigint (20) NOT NULL AUTO_INCREMENT,
     `ctitle` varchar(50) NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
@@ -966,7 +966,7 @@ CREATE TABLE `criteria` (
 DROP TABLE IF EXISTS `dbase_candidate`;
 
 CREATE TABLE `dbase_candidate` (
-    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `id` bigint (20) NOT NULL AUTO_INCREMENT,
     `name` varchar(100) NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
@@ -978,7 +978,7 @@ CREATE TABLE `dbase_candidate` (
 DROP TABLE IF EXISTS `dbase_criteria`;
 
 CREATE TABLE `dbase_criteria` (
-    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `id` bigint (20) NOT NULL AUTO_INCREMENT,
     `name` varchar(100) NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
@@ -990,7 +990,7 @@ CREATE TABLE `dbase_criteria` (
 DROP TABLE IF EXISTS `dbase_event`;
 
 CREATE TABLE `dbase_event` (
-    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `id` bigint (20) NOT NULL AUTO_INCREMENT,
     `name` varchar(100) NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
@@ -1002,7 +1002,7 @@ CREATE TABLE `dbase_event` (
 DROP TABLE IF EXISTS `dbase_judge`;
 
 CREATE TABLE `dbase_judge` (
-    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `id` bigint (20) NOT NULL AUTO_INCREMENT,
     `name` varchar(100) NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
@@ -1014,9 +1014,9 @@ CREATE TABLE `dbase_judge` (
 DROP TABLE IF EXISTS `dbase_judgecriteria`;
 
 CREATE TABLE `dbase_judgecriteria` (
-    `id` bigint(20) NOT NULL AUTO_INCREMENT,
-    `criteria_id` bigint(20) NOT NULL,
-    `judge_id` bigint(20) NOT NULL,
+    `id` bigint (20) NOT NULL AUTO_INCREMENT,
+    `criteria_id` bigint (20) NOT NULL,
+    `judge_id` bigint (20) NOT NULL,
     PRIMARY KEY (`id`),
     KEY `dbase_judgecriteria_criteria_id_ad039158_fk_dbase_criteria_id` (`criteria_id`),
     KEY `dbase_judgecriteria_judge_id_bb4cf821_fk_dbase_judge_id` (`judge_id`),
@@ -1031,7 +1031,7 @@ CREATE TABLE `dbase_judgecriteria` (
 DROP TABLE IF EXISTS `dbase_score`;
 
 CREATE TABLE `dbase_score` (
-    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `id` bigint (20) NOT NULL AUTO_INCREMENT,
     `value` int(11) NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
@@ -1047,7 +1047,7 @@ CREATE TABLE `django_admin_log` (
     `action_time` datetime(6) NOT NULL,
     `object_id` longtext DEFAULT NULL,
     `object_repr` varchar(200) NOT NULL,
-    `action_flag` smallint(5) unsigned NOT NULL CHECK (`action_flag` >= 0),
+    `action_flag` smallint (5) unsigned NOT NULL CHECK (`action_flag` >= 0),
     `change_message` longtext NOT NULL,
     `content_type_id` int(11) DEFAULT NULL,
     `user_id` int(11) NOT NULL,
@@ -1131,7 +1131,7 @@ values (1, 'admin', 'logentry'),
 DROP TABLE IF EXISTS `django_migrations`;
 
 CREATE TABLE `django_migrations` (
-    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `id` bigint (20) NOT NULL AUTO_INCREMENT,
     `app` varchar(255) NOT NULL,
     `name` varchar(255) NOT NULL,
     `applied` datetime(6) NOT NULL,
@@ -1420,7 +1420,7 @@ values (
 DROP TABLE IF EXISTS `esloguser`;
 
 CREATE TABLE `esloguser` (
-    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `id` bigint (20) NOT NULL AUTO_INCREMENT,
     `username` varchar(50) NOT NULL,
     `action` varchar(100) NOT NULL,
     `timestamp` datetime(6) NOT NULL,
@@ -1434,7 +1434,7 @@ CREATE TABLE `esloguser` (
 DROP TABLE IF EXISTS `event`;
 
 CREATE TABLE `event` (
-    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `id` bigint (20) NOT NULL AUTO_INCREMENT,
     `evdes` varchar(150) NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 17 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
@@ -1457,7 +1457,7 @@ values (9, 'ROBLOX'),
 DROP TABLE IF EXISTS `gradinsname`;
 
 CREATE TABLE `gradinsname` (
-    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `id` bigint (20) NOT NULL AUTO_INCREMENT,
     `fname` varchar(50) NOT NULL,
     `lname` varchar(50) NOT NULL,
     `ulevel` varchar(5) NOT NULL,
@@ -1471,7 +1471,7 @@ CREATE TABLE `gradinsname` (
 DROP TABLE IF EXISTS `gradminpas`;
 
 CREATE TABLE `gradminpas` (
-    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `id` bigint (20) NOT NULL AUTO_INCREMENT,
     `username` varchar(50) NOT NULL,
     `spassword` varchar(128) NOT NULL,
     PRIMARY KEY (`id`)
@@ -1497,9 +1497,9 @@ values (
 DROP TABLE IF EXISTS `judge`;
 
 CREATE TABLE `judge` (
-    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `id` bigint (20) NOT NULL AUTO_INCREMENT,
     `jname` varchar(100) NOT NULL,
-    `event_id` bigint(20) DEFAULT NULL,
+    `event_id` bigint (20) DEFAULT NULL,
     `uname` varchar(100) NOT NULL,
     PRIMARY KEY (`id`),
     KEY `judge_event_id_a26fbaae_fk_event_id` (`event_id`),
@@ -1513,8 +1513,8 @@ CREATE TABLE `judge` (
 DROP TABLE IF EXISTS `judgeapproval`;
 
 CREATE TABLE `judgeapproval` (
-    `id` bigint(20) NOT NULL AUTO_INCREMENT,
-    `approved` tinyint(1) NOT NULL,
+    `id` bigint (20) NOT NULL AUTO_INCREMENT,
+    `approved` tinyint (1) NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
@@ -1525,7 +1525,7 @@ CREATE TABLE `judgeapproval` (
 DROP TABLE IF EXISTS `judgecriteria`;
 
 CREATE TABLE `judgecriteria` (
-    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `id` bigint (20) NOT NULL AUTO_INCREMENT,
     `ejid` int(11) DEFAULT NULL,
     `scri` int(11) DEFAULT NULL,
     PRIMARY KEY (`id`)
@@ -1538,7 +1538,7 @@ CREATE TABLE `judgecriteria` (
 DROP TABLE IF EXISTS `judgesapproved`;
 
 CREATE TABLE `judgesapproved` (
-    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `id` bigint (20) NOT NULL AUTO_INCREMENT,
     `ejid` int(11) DEFAULT NULL,
     `evid` int(11) DEFAULT NULL,
     `sconid` int(11) DEFAULT NULL,
@@ -1553,7 +1553,7 @@ CREATE TABLE `judgesapproved` (
 DROP TABLE IF EXISTS `resall`;
 
 CREATE TABLE `resall` (
-    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `id` bigint (20) NOT NULL AUTO_INCREMENT,
     `sconid` int(11) DEFAULT NULL,
     `evid` int(11) DEFAULT NULL,
     `ejid` int(11) DEFAULT NULL,
@@ -1570,7 +1570,7 @@ CREATE TABLE `resall` (
 DROP TABLE IF EXISTS `rescri`;
 
 CREATE TABLE `rescri` (
-    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `id` bigint (20) NOT NULL AUTO_INCREMENT,
     `sconid` int(11) DEFAULT NULL,
     `evid` int(11) DEFAULT NULL,
     `ejid` int(11) DEFAULT NULL,
@@ -1587,7 +1587,7 @@ CREATE TABLE `rescri` (
 DROP TABLE IF EXISTS `resnoshow`;
 
 CREATE TABLE `resnoshow` (
-    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `id` bigint (20) NOT NULL AUTO_INCREMENT,
     `noshow` varchar(3) DEFAULT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
@@ -1715,9 +1715,9 @@ values (
 DROP TABLE IF EXISTS `score`;
 
 CREATE TABLE `score` (
-    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `id` bigint (20) NOT NULL AUTO_INCREMENT,
     `value` double NOT NULL,
-    `candidate_id` bigint(20) DEFAULT NULL,
+    `candidate_id` bigint (20) DEFAULT NULL,
     PRIMARY KEY (`id`),
     KEY `score_candidate_id_457544f8_fk_candidate_id` (`candidate_id`),
     CONSTRAINT `score_candidate_id_457544f8_fk_candidate_id` FOREIGN KEY (`candidate_id`) REFERENCES `candidate` (`id`)
@@ -1827,7 +1827,7 @@ CREATE TABLE `sinscore` (
     `category` varchar(20) DEFAULT NULL,
     `subdon` varchar(2) DEFAULT NULL,
     `cristat` varchar(2) DEFAULT NULL,
-    `rankscore` smallint(6) DEFAULT NULL,
+    `rankscore` smallint (6) DEFAULT NULL,
     `evid` int(11) DEFAULT NULL,
     `sconid` int(11) DEFAULT NULL,
     `scri` int(11) DEFAULT NULL,
